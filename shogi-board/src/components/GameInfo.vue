@@ -56,17 +56,17 @@ defineProps<{
 
 .mode-badge.input {
   background: #d4edda;
-  color: #155724;
+  color: #0f4c22;
 }
 
 .mode-badge.playback {
   background: #cce5ff;
-  color: #004085;
+  color: #003060;
 }
 
 .mode-badge.continuation {
-  background: #fff3cd;
-  color: #856404;
+  background: #f0e0a0;
+  color: #5a3e00;
 }
 
 .info-row {
@@ -76,7 +76,7 @@ defineProps<{
 }
 
 .label {
-  color: #666;
+  color: #5a5a5a;
 }
 
 .value {

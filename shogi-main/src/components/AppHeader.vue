@@ -12,8 +12,8 @@ const menuItems = computed(() => {
   if (!isAuthenticated.value) return []
   return [
     {
-      label: '棋譜一覧',
-      icon: 'pi pi-list',
+      label: 'マイページ',
+      icon: 'pi pi-home',
       command: () => router.push('/kifus'),
     },
     {

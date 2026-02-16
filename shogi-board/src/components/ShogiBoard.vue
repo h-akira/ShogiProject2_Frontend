@@ -156,6 +156,7 @@ defineExpose({
   flex-direction: column;
   gap: 4px;
   position: relative;
+  color: #2c2c2c;
 }
 
 .promotion-overlay {

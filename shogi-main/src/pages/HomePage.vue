@@ -37,10 +37,10 @@ const { isAuthenticated, login } = useAuth()
         <Card class="dashboard-card" @click="router.push('/kifus')">
           <template #header>
             <div class="card-icon">
-              <i class="pi pi-list" />
+              <i class="pi pi-home" />
             </div>
           </template>
-          <template #title>棋譜一覧</template>
+          <template #title>マイページ</template>
           <template #subtitle>最近の棋譜を確認・管理</template>
         </Card>
 

@@ -3,9 +3,11 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
+import Button from 'primevue/button'
+import Dialog from 'primevue/dialog'
 import ProgressSpinner from 'primevue/progressspinner'
 import type { TagDetail } from '@/types/api'
-import { getTag } from '@/api/tags'
+import { getTag, deleteTag } from '@/api/tags'
 
 const route = useRoute()
 const router = useRouter()
@@ -13,6 +15,7 @@ const tid = route.params.tid as string
 
 const tag = ref<TagDetail | null>(null)
 const loading = ref(true)
+const deleteDialogVisible = ref(false)
 
 onMounted(async () => {
   tag.value = await getTag(tid)
@@ -21,6 +24,11 @@ onMounted(async () => {
 
 function onRowClick(event: { data: { kid: string } }) {
   router.push(`/kifus/${event.data.kid}`)
+}
+
+async function handleDelete() {
+  await deleteTag(tid)
+  router.push('/tags')
 }
 </script>
 
@@ -31,10 +39,30 @@ function onRowClick(event: { data: { kid: string } }) {
     </template>
 
     <template v-else-if="tag">
-      <h1>タグ: {{ tag.name }}</h1>
-      <p class="tag-meta">
-        {{ tag.kifu_count }} 件の棋譜
-      </p>
+      <div class="page-header">
+        <div>
+          <h1>タグ: {{ tag.name }}</h1>
+          <p class="tag-meta">
+            {{ tag.kifu_count }} 件の棋譜
+          </p>
+        </div>
+        <div class="header-actions">
+          <Button
+            label="編集"
+            icon="pi pi-pencil"
+            severity="secondary"
+            outlined
+            @click="router.push(`/tags/${tid}/edit`)"
+          />
+          <Button
+            label="削除"
+            icon="pi pi-trash"
+            severity="danger"
+            outlined
+            @click="deleteDialogVisible = true"
+          />
+        </div>
+      </div>
 
       <DataTable
         :value="tag.kifus"
@@ -52,6 +80,32 @@ function onRowClick(event: { data: { kid: string } }) {
         </template>
       </DataTable>
     </template>
+
+    <!-- Delete confirmation -->
+    <Dialog
+      v-model:visible="deleteDialogVisible"
+      header="タグの削除"
+      :modal="true"
+      :closable="true"
+    >
+      <p>
+        タグ「{{ tag?.name }}」を削除しますか？<br />
+        棋譜に付与されている関連データも同時に削除されます。
+      </p>
+      <template #footer>
+        <Button
+          label="キャンセル"
+          severity="secondary"
+          outlined
+          @click="deleteDialogVisible = false"
+        />
+        <Button
+          label="削除"
+          severity="danger"
+          @click="handleDelete"
+        />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -60,13 +114,27 @@ function onRowClick(event: { data: { kid: string } }) {
   padding: 1rem 0;
 }
 
-h1 {
-  margin-bottom: 0.25rem;
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.page-header h1 {
+  margin: 0 0 0.25rem;
+}
+
+.header-actions {
+  display: flex;
+  gap: 0.5rem;
 }
 
 .tag-meta {
   color: var(--p-text-muted-color, #6b7280);
-  margin-bottom: 1.5rem;
+  margin: 0;
 }
 
 .kifu-table :deep(tr) {

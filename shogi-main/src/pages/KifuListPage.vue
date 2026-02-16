@@ -11,6 +11,7 @@ import { getKifus } from '@/api/kifus'
 const router = useRouter()
 const kifus = ref<KifuSummary[]>([])
 const loading = ref(true)
+const totalCount = ref(0)
 
 const firstOrSecondLabel: Record<string, string> = {
   none: '-',
@@ -28,25 +29,41 @@ const resultLabel: Record<string, string> = {
 
 onMounted(async () => {
   const res = await getKifus()
+  totalCount.value = res.items.length
   kifus.value = res.items
+    .sort((a, b) => b.latest_update.localeCompare(a.latest_update))
+    .slice(0, 10)
   loading.value = false
 })
 
 function onRowClick(event: { data: KifuSummary }) {
   router.push(`/kifus/${event.data.kid}`)
 }
+
+function onTagClick(tid: string) {
+  router.push(`/tags/${tid}`)
+}
 </script>
 
 <template>
   <div class="kifu-list-page">
     <div class="page-header">
-      <h1>棋譜一覧</h1>
+      <h1>マイページ</h1>
       <Button
         label="新規作成"
         icon="pi pi-plus"
         @click="router.push('/kifus/new')"
       />
     </div>
+
+    <div v-if="!loading" class="summary-section">
+      <div class="summary-card">
+        <span class="summary-value">{{ totalCount }}</span>
+        <span class="summary-label">保存棋譜数</span>
+      </div>
+    </div>
+
+    <h2>最近の更新</h2>
 
     <DataTable
       :value="kifus"
@@ -70,7 +87,13 @@ function onRowClick(event: { data: KifuSummary }) {
       <Column header="タグ">
         <template #body="{ data }">
           <div class="tag-chips">
-            <Chip v-for="tag in data.tags" :key="tag.tid" :label="tag.name" />
+            <Chip
+              v-for="tag in data.tags"
+              :key="tag.tid"
+              :label="tag.name"
+              class="tag-link"
+              @click.stop="onTagClick(tag.tid)"
+            />
           </div>
         </template>
       </Column>
@@ -95,10 +118,49 @@ function onRowClick(event: { data: KifuSummary }) {
   margin: 0;
 }
 
+.summary-section {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.summary-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 2rem;
+  background: #fff;
+  border: 1px solid #d4c5a9;
+  border-radius: 8px;
+}
+
+.summary-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #8b4513;
+}
+
+.summary-label {
+  font-size: 0.875rem;
+  color: #5a5a5a;
+}
+
+h2 {
+  margin-bottom: 1rem;
+}
+
 .tag-chips {
   display: flex;
   gap: 0.25rem;
   flex-wrap: wrap;
+}
+
+.tag-link {
+  cursor: pointer;
+}
+
+.tag-link:hover {
+  opacity: 0.8;
 }
 
 .kifu-table :deep(tr) {

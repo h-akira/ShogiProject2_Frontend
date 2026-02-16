@@ -75,9 +75,10 @@ function onSliderInput(event: Event) {
 .nav-buttons button {
   width: 40px;
   height: 32px;
-  border: 1px solid #ccc;
+  border: 1px solid #d4c5a9;
   border-radius: 4px;
   background: #fff;
+  color: #2c2c2c;
   cursor: pointer;
   font-size: 0.85rem;
   font-family: inherit;
@@ -87,7 +88,7 @@ function onSliderInput(event: Event) {
 }
 
 .nav-buttons button:hover:not(:disabled) {
-  background: #f0f0f0;
+  background: #f5efe5;
 }
 
 .nav-buttons button:disabled {
@@ -111,7 +112,7 @@ function onSliderInput(event: Event) {
 
 .move-info {
   font-size: 0.85rem;
-  color: #666;
+  color: #5a5a5a;
   white-space: nowrap;
 }
 
@@ -120,6 +121,7 @@ function onSliderInput(event: Event) {
   border: 1px solid #8b4513;
   border-radius: 4px;
   background: #f5e6c8;
+  color: #5a3510;
   cursor: pointer;
   font-size: 0.85rem;
   font-family: inherit;
@@ -143,16 +145,17 @@ function onSliderInput(event: Event) {
 
 .continuation-bar button {
   padding: 4px 12px;
-  border: 1px solid #ccc;
+  border: 1px solid #d4c5a9;
   border-radius: 4px;
   background: #fff;
+  color: #2c2c2c;
   cursor: pointer;
   font-size: 0.85rem;
   font-family: inherit;
 }
 
 .continuation-bar button:hover {
-  background: #f0f0f0;
+  background: #f5efe5;
 }
 
 .exit-btn {

@@ -153,6 +153,8 @@ function copyShareLink() {
                 v-for="tag in kifu.tags"
                 :key="tag.tid"
                 :label="tag.name"
+                class="tag-link"
+                @click="router.push(`/tags/${tag.tid}`)"
               />
             </div>
           </div>
@@ -316,6 +318,14 @@ function copyShareLink() {
   display: flex;
   gap: 0.25rem;
   flex-wrap: wrap;
+}
+
+.tag-link {
+  cursor: pointer;
+}
+
+.tag-link:hover {
+  opacity: 0.8;
 }
 
 .memo-text {
