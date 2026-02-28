@@ -5,8 +5,8 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
-import type { Tag } from '@/types/api'
-import { getTags, deleteTag } from '@/api/tags'
+import type { Tag } from '@/api/generated/main/model'
+import { getTags, deleteTag } from '@/api/generated/main/tags/tags'
 
 const router = useRouter()
 const tags = ref<Tag[]>([])
@@ -16,7 +16,9 @@ const tagToDelete = ref<Tag | null>(null)
 
 onMounted(async () => {
   const res = await getTags()
-  tags.value = res.items
+  if (res.status === 200) {
+    tags.value = res.data.tags
+  }
   loading.value = false
 })
 
@@ -58,8 +60,8 @@ async function handleDelete() {
       class="tag-table"
     >
       <Column field="name" header="タグ名" sortable />
-      <Column field="created" header="作成日" sortable style="width: 160px" />
-      <Column field="latest_update" header="更新日" sortable style="width: 160px" />
+      <Column field="created_at" header="作成日" sortable style="width: 160px" />
+      <Column field="updated_at" header="更新日" sortable style="width: 160px" />
       <Column header="操作" style="width: 140px">
         <template #body="{ data }">
           <div class="action-buttons">

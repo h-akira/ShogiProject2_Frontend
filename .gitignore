@@ -26,6 +26,12 @@ coverage
 
 *.tsbuildinfo
 
+# orval generated code
+shogi-main/src/api/generated/
+
+# MSW worker
+shogi-main/public/mockServiceWorker.js
+
 .eslintcache
 
 # Cypress

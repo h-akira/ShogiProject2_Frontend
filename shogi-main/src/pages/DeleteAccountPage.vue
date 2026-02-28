@@ -5,7 +5,7 @@ import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import Message from 'primevue/message'
-import { deleteAccount } from '@/api/users'
+import { deleteMe } from '@/api/generated/main/users/users'
 import { useAuth } from '@/auth/auth'
 
 const router = useRouter()
@@ -23,7 +23,7 @@ function showConfirm() {
 async function handleDelete() {
   deleting.value = true
   try {
-    await deleteAccount(password.value)
+    await deleteMe({ password: password.value })
     logout()
     router.push('/')
   } finally {

@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
-import { createTag } from '@/api/tags'
+import { createTag } from '@/api/generated/main/tags/tags'
 
 const router = useRouter()
 const name = ref('')

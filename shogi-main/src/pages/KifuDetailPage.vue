@@ -4,13 +4,15 @@ import { useRoute, useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
 import Dialog from 'primevue/dialog'
-import Select from 'primevue/select'
+import SelectButton from 'primevue/selectbutton'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 import { ShogiBoard } from 'shogi-board'
-import type { KifuDetail, AnalysisResponse } from '@/types/api'
-import { getKifu, deleteKifu } from '@/api/kifus'
-import { requestAnalysis, getAnalysisResult } from '@/api/analysis'
+import type { KifuDetail } from '@/api/generated/main/model'
+import { getKifu, deleteKifu, regenerateShareCode } from '@/api/generated/main/kifus/kifus'
+import { createAnalysis, getAnalysis } from '@/api/generated/analysis/analysis/analysis'
+import { sideLabel, resultLabel } from '@/utils/labels'
+import type { AnalysisResult, ThinkingTime } from '@/api/generated/analysis/model'
 
 const route = useRoute()
 const router = useRouter()
@@ -20,40 +22,30 @@ const kifu = ref<KifuDetail | null>(null)
 const boardRef = ref<InstanceType<typeof ShogiBoard>>()
 const loading = ref(true)
 const deleteDialogVisible = ref(false)
+const regenerateDialogVisible = ref(false)
 
 // Analysis
-const movetime = ref(3000)
+const thinkingTime = ref<ThinkingTime>(3000)
 const analyzing = ref(false)
-const analysisResult = ref<AnalysisResponse | null>(null)
+const analysisResult = ref<AnalysisResult | null>(null)
 
-const movetimeOptions = [
+const thinkingTimeOptions = [
   { label: '3秒', value: 3000 },
   { label: '5秒', value: 5000 },
   { label: '10秒', value: 10000 },
 ]
 
-const firstOrSecondLabel: Record<string, string> = {
-  none: '-',
-  first: '先手',
-  second: '後手',
-}
-
-const resultLabel: Record<string, string> = {
-  none: '-',
-  win: '勝ち',
-  lose: '負け',
-  sennichite: '千日手',
-  jishogi: '持将棋',
-}
-
 onMounted(async () => {
-  kifu.value = await getKifu(kid)
+  const res = await getKifu(kid)
+  if (res.status === 200) {
+    kifu.value = res.data
+  }
   loading.value = false
 
   // Load KIF into board after next tick
   setTimeout(() => {
-    if (kifu.value?.kifu && boardRef.value) {
-      boardRef.value.loadKif(kifu.value.kifu)
+    if (kifu.value?.kif && boardRef.value) {
+      boardRef.value.loadKif(kifu.value.kif)
     }
   }, 100)
 })
@@ -69,18 +61,21 @@ async function handleAnalysis() {
   analyzing.value = true
   analysisResult.value = null
 
-  const { aid } = await requestAnalysis({
-    position: `position sfen ${sfen}`,
-    movetime: movetime.value,
+  const createRes = await createAnalysis({
+    sfen,
+    thinking_time: thinkingTime.value,
   })
+  if (createRes.status !== 202) return
+
+  const aid = createRes.data.aid
 
   // Poll for result
   const poll = async () => {
-    const res = await getAnalysisResult(aid)
-    if (res.status === 'running') {
+    const res = await getAnalysis(aid)
+    if (res.status === 200 && res.data.status === 'running') {
       setTimeout(poll, 2000)
-    } else {
-      analysisResult.value = res
+    } else if (res.status === 200) {
+      analysisResult.value = res.data
       analyzing.value = false
     }
   }
@@ -91,6 +86,14 @@ function copyShareLink() {
   if (!kifu.value) return
   const url = `${window.location.origin}/shared/${kifu.value.share_code}`
   navigator.clipboard.writeText(url)
+}
+
+async function handleRegenerateShareCode() {
+  const res = await regenerateShareCode(kid)
+  if (res.status === 200 && kifu.value) {
+    kifu.value.share_code = res.data.share_code
+  }
+  regenerateDialogVisible.value = false
 }
 </script>
 
@@ -130,7 +133,7 @@ function copyShareLink() {
           <div class="meta-grid">
             <div class="meta-item">
               <span class="meta-label">先後</span>
-              <span>{{ firstOrSecondLabel[kifu.first_or_second] }}</span>
+              <span>{{ sideLabel[kifu.side] }}</span>
             </div>
             <div class="meta-item">
               <span class="meta-label">勝敗</span>
@@ -138,11 +141,11 @@ function copyShareLink() {
             </div>
             <div class="meta-item">
               <span class="meta-label">作成日</span>
-              <span>{{ kifu.created }}</span>
+              <span>{{ kifu.created_at }}</span>
             </div>
             <div class="meta-item">
               <span class="meta-label">更新日</span>
-              <span>{{ kifu.latest_update }}</span>
+              <span>{{ kifu.updated_at }}</span>
             </div>
           </div>
 
@@ -164,15 +167,22 @@ function copyShareLink() {
             <p class="memo-text">{{ kifu.memo }}</p>
           </div>
 
-          <div v-if="kifu.share" class="share-section">
+          <div v-if="kifu.shared" class="share-section">
             <span class="meta-label">共有リンク</span>
             <div class="share-row">
-              <code class="share-code">/shared/{{ kifu.share_code.slice(0, 12) }}...</code>
+              <code class="share-code">/shared/{{ kifu.share_code?.slice(0, 12) }}...</code>
               <Button
                 icon="pi pi-copy"
                 text
                 size="small"
                 @click="copyShareLink"
+              />
+              <Button
+                icon="pi pi-refresh"
+                text
+                size="small"
+                severity="warning"
+                @click="regenerateDialogVisible = true"
               />
             </div>
           </div>
@@ -181,9 +191,9 @@ function copyShareLink() {
           <div class="analysis-section">
             <h3>AI 局面解析</h3>
             <div class="analysis-controls">
-              <Select
-                v-model="movetime"
-                :options="movetimeOptions"
+              <SelectButton
+                v-model="thinkingTime"
+                :options="thinkingTimeOptions"
                 optionLabel="label"
                 optionValue="value"
               />
@@ -200,9 +210,9 @@ function copyShareLink() {
               <span>解析中...</span>
             </div>
 
-            <div v-if="analysisResult?.status === 'completed' && analysisResult.result" class="analysis-results">
+            <div v-if="analysisResult?.status === 'completed' && analysisResult.candidates" class="analysis-results">
               <div
-                v-for="c in analysisResult.result.candidates"
+                v-for="c in analysisResult.candidates"
                 :key="c.rank"
                 class="candidate"
               >
@@ -242,6 +252,29 @@ function copyShareLink() {
           label="削除"
           severity="danger"
           @click="handleDelete"
+        />
+      </template>
+    </Dialog>
+
+    <!-- Regenerate share code confirmation -->
+    <Dialog
+      v-model:visible="regenerateDialogVisible"
+      header="共有コードの再生成"
+      :modal="true"
+      :closable="true"
+    >
+      <p>共有コードを再生成しますか？既存の共有リンクは無効になります。</p>
+      <template #footer>
+        <Button
+          label="キャンセル"
+          severity="secondary"
+          outlined
+          @click="regenerateDialogVisible = false"
+        />
+        <Button
+          label="再生成"
+          severity="warning"
+          @click="handleRegenerateShareCode"
         />
       </template>
     </Dialog>

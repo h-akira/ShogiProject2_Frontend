@@ -10,9 +10,9 @@ import Button from 'primevue/button'
 import SelectButton from 'primevue/selectbutton'
 import ProgressSpinner from 'primevue/progressspinner'
 import { ShogiBoard } from 'shogi-board'
-import type { KifuDetail, KifuUpdateRequest, Tag } from '@/types/api'
-import { getKifu, updateKifu } from '@/api/kifus'
-import { getTags } from '@/api/tags'
+import type { KifuDetail, KifuUpdateRequest, Tag, Side, Result } from '@/api/generated/main/model'
+import { getKifu, updateKifu } from '@/api/generated/main/kifus/kifus'
+import { getTags } from '@/api/generated/main/tags/tags'
 
 const route = useRoute()
 const router = useRouter()
@@ -22,9 +22,9 @@ const boardRef = ref<InstanceType<typeof ShogiBoard>>()
 const kifu = ref<KifuDetail | null>(null)
 const slug = ref('')
 const memo = ref('')
-const firstOrSecond = ref('none')
-const result = ref('none')
-const share = ref(false)
+const side = ref<Side>('none')
+const result = ref<Result>('none')
+const shared = ref(false)
 const selectedTagIds = ref<string[]>([])
 const kifText = ref('')
 const inputMode = ref<'board' | 'text'>('board')
@@ -32,16 +32,16 @@ const saving = ref(false)
 const loading = ref(true)
 const tags = ref<Tag[]>([])
 
-const firstOrSecondOptions = [
+const sideOptions = [
   { label: 'なし', value: 'none' },
-  { label: '先手', value: 'first' },
-  { label: '後手', value: 'second' },
+  { label: '先手', value: 'sente' },
+  { label: '後手', value: 'gote' },
 ]
 
 const resultOptions = [
   { label: 'なし', value: 'none' },
   { label: '勝ち', value: 'win' },
-  { label: '負け', value: 'lose' },
+  { label: '負け', value: 'loss' },
   { label: '千日手', value: 'sennichite' },
   { label: '持将棋', value: 'jishogi' },
 ]
@@ -56,24 +56,27 @@ const tagOptions = computed(() =>
 )
 
 onMounted(async () => {
-  const [kifuData, tagRes] = await Promise.all([getKifu(kid), getTags()])
+  const [kifuRes, tagRes] = await Promise.all([getKifu(kid), getTags()])
+  if (kifuRes.status !== 200 || tagRes.status !== 200) return
+
+  const kifuData = kifuRes.data
   kifu.value = kifuData
-  tags.value = tagRes.items
+  tags.value = tagRes.data.tags
 
   slug.value = kifuData.slug.replace(/\.kif$/, '')
   memo.value = kifuData.memo
-  firstOrSecond.value = kifuData.first_or_second
+  side.value = kifuData.side
   result.value = kifuData.result
-  share.value = kifuData.share
+  shared.value = kifuData.shared
   selectedTagIds.value = kifuData.tags.map((t) => t.tid)
-  kifText.value = kifuData.kifu
+  kifText.value = kifuData.kif
 
   loading.value = false
 
   // Load KIF into board
-  if (kifuData.kifu) {
+  if (kifuData.kif) {
     setTimeout(() => {
-      boardRef.value?.loadKif(kifuData.kifu)
+      boardRef.value?.loadKif(kifuData.kif)
       boardRef.value?.switchToInput()
     }, 100)
   }
@@ -82,20 +85,20 @@ onMounted(async () => {
 async function handleSave() {
   saving.value = true
   try {
-    let kifuStr = ''
+    let kifStr = ''
     if (inputMode.value === 'board') {
-      kifuStr = boardRef.value?.getKif() ?? ''
+      kifStr = boardRef.value?.getKif() ?? ''
     } else {
-      kifuStr = kifText.value
+      kifStr = kifText.value
     }
 
     const req: KifuUpdateRequest = {
       slug: slug.value,
-      kifu: kifuStr,
+      kif: kifStr,
       memo: memo.value,
-      first_or_second: firstOrSecond.value as KifuUpdateRequest['first_or_second'],
-      result: result.value as KifuUpdateRequest['result'],
-      share: share.value,
+      side: side.value,
+      result: result.value,
+      shared: shared.value,
       tag_ids: selectedTagIds.value,
     }
 
@@ -129,11 +132,11 @@ async function handleSave() {
 
         <div class="form-row">
           <div class="form-field">
-            <label for="first-or-second">先後</label>
+            <label for="side">先後</label>
             <Select
-              id="first-or-second"
-              v-model="firstOrSecond"
-              :options="firstOrSecondOptions"
+              id="side"
+              v-model="side"
+              :options="sideOptions"
               optionLabel="label"
               optionValue="value"
               class="w-full"
@@ -179,8 +182,8 @@ async function handleSave() {
         <div class="form-field">
           <label>共有</label>
           <div class="toggle-row">
-            <ToggleSwitch v-model="share" />
-            <span>{{ share ? '有効' : '無効' }}</span>
+            <ToggleSwitch v-model="shared" />
+            <span>{{ shared ? '有効' : '無効' }}</span>
           </div>
         </div>
 

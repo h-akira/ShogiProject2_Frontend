@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
-import { getTag, updateTag } from '@/api/tags'
+import { getTag, updateTag } from '@/api/generated/main/tags/tags'
 
 const route = useRoute()
 const router = useRouter()
@@ -15,8 +15,10 @@ const saving = ref(false)
 const loading = ref(true)
 
 onMounted(async () => {
-  const tag = await getTag(tid)
-  name.value = tag.name
+  const res = await getTag(tid)
+  if (res.status === 200) {
+    name.value = res.data.name
+  }
   loading.value = false
 })
 

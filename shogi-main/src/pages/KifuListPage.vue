@@ -5,34 +5,21 @@ import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Button from 'primevue/button'
 import Chip from 'primevue/chip'
-import type { KifuSummary } from '@/types/api'
-import { getKifus } from '@/api/kifus'
+import type { KifuSummary } from '@/api/generated/main/model'
+import { getRecentKifus } from '@/api/generated/main/kifus/kifus'
+import { sideLabel, resultLabel } from '@/utils/labels'
 
 const router = useRouter()
 const kifus = ref<KifuSummary[]>([])
 const loading = ref(true)
 const totalCount = ref(0)
 
-const firstOrSecondLabel: Record<string, string> = {
-  none: '-',
-  first: '先手',
-  second: '後手',
-}
-
-const resultLabel: Record<string, string> = {
-  none: '-',
-  win: '勝ち',
-  lose: '負け',
-  sennichite: '千日手',
-  jishogi: '持将棋',
-}
-
 onMounted(async () => {
-  const res = await getKifus()
-  totalCount.value = res.items.length
-  kifus.value = res.items
-    .sort((a, b) => b.latest_update.localeCompare(a.latest_update))
-    .slice(0, 10)
+  const res = await getRecentKifus()
+  if (res.status === 200) {
+    totalCount.value = res.data.total_count
+    kifus.value = res.data.kifus
+  }
   loading.value = false
 })
 
@@ -74,9 +61,9 @@ function onTagClick(tid: string) {
       class="kifu-table"
     >
       <Column field="slug" header="スラグ" sortable />
-      <Column field="first_or_second" header="先後" sortable style="width: 80px">
+      <Column field="side" header="先後" sortable style="width: 80px">
         <template #body="{ data }">
-          {{ firstOrSecondLabel[data.first_or_second] }}
+          {{ sideLabel[data.side] }}
         </template>
       </Column>
       <Column field="result" header="勝敗" sortable style="width: 80px">
@@ -97,7 +84,7 @@ function onTagClick(tid: string) {
           </div>
         </template>
       </Column>
-      <Column field="latest_update" header="更新日時" sortable style="width: 160px" />
+      <Column field="updated_at" header="更新日時" sortable style="width: 160px" />
 
       <template #empty>
         <div class="empty-message">棋譜がありません</div>

@@ -4,39 +4,31 @@ import { useRoute } from 'vue-router'
 import ProgressSpinner from 'primevue/progressspinner'
 import Message from 'primevue/message'
 import { ShogiBoard } from 'shogi-board'
-import type { SharedKifu } from '@/types/api'
-import { getSharedKifu } from '@/api/kifus'
+import type { SharedKifuDetail } from '@/api/generated/main/model'
+import { getSharedKifu } from '@/api/generated/main/shared/shared'
+import { sideLabel, resultLabel } from '@/utils/labels'
 
 const route = useRoute()
-const shareCode = route.params.share_code as string
+const shareCode = route.params.shareCode as string
 
-const kifu = ref<SharedKifu | null>(null)
+const kifu = ref<SharedKifuDetail | null>(null)
 const boardRef = ref<InstanceType<typeof ShogiBoard>>()
 const loading = ref(true)
 const error = ref(false)
 
-const firstOrSecondLabel: Record<string, string> = {
-  none: '-',
-  first: '先手',
-  second: '後手',
-}
-
-const resultLabel: Record<string, string> = {
-  none: '-',
-  win: '勝ち',
-  lose: '負け',
-  sennichite: '千日手',
-  jishogi: '持将棋',
-}
-
 onMounted(async () => {
   try {
-    kifu.value = await getSharedKifu(shareCode)
+    const res = await getSharedKifu(shareCode)
+    if (res.status === 200) {
+      kifu.value = res.data
+    } else {
+      error.value = true
+    }
     loading.value = false
 
     setTimeout(() => {
-      if (kifu.value?.kifu && boardRef.value) {
-        boardRef.value.loadKif(kifu.value.kifu)
+      if (kifu.value?.kif && boardRef.value) {
+        boardRef.value.loadKif(kifu.value.kif)
       }
     }, 100)
   } catch {
@@ -70,7 +62,7 @@ onMounted(async () => {
           <div class="meta-grid">
             <div class="meta-item">
               <span class="meta-label">先後</span>
-              <span>{{ firstOrSecondLabel[kifu.first_or_second] }}</span>
+              <span>{{ sideLabel[kifu.side] }}</span>
             </div>
             <div class="meta-item">
               <span class="meta-label">勝敗</span>
@@ -78,11 +70,11 @@ onMounted(async () => {
             </div>
             <div class="meta-item">
               <span class="meta-label">作成日</span>
-              <span>{{ kifu.created }}</span>
+              <span>{{ kifu.created_at }}</span>
             </div>
             <div class="meta-item">
               <span class="meta-label">更新日</span>
-              <span>{{ kifu.latest_update }}</span>
+              <span>{{ kifu.updated_at }}</span>
             </div>
           </div>
 

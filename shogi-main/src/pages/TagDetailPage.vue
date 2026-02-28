@@ -6,8 +6,8 @@ import Column from 'primevue/column'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
 import ProgressSpinner from 'primevue/progressspinner'
-import type { TagDetail } from '@/types/api'
-import { getTag, deleteTag } from '@/api/tags'
+import type { TagDetail } from '@/api/generated/main/model'
+import { getTag, deleteTag } from '@/api/generated/main/tags/tags'
 
 const route = useRoute()
 const router = useRouter()
@@ -18,7 +18,10 @@ const loading = ref(true)
 const deleteDialogVisible = ref(false)
 
 onMounted(async () => {
-  tag.value = await getTag(tid)
+  const res = await getTag(tid)
+  if (res.status === 200) {
+    tag.value = res.data
+  }
   loading.value = false
 })
 
@@ -43,7 +46,7 @@ async function handleDelete() {
         <div>
           <h1>タグ: {{ tag.name }}</h1>
           <p class="tag-meta">
-            {{ tag.kifu_count }} 件の棋譜
+            {{ tag.kifus.length }} 件の棋譜
           </p>
         </div>
         <div class="header-actions">
@@ -72,8 +75,8 @@ async function handleDelete() {
         class="kifu-table"
       >
         <Column field="slug" header="スラグ" sortable />
-        <Column field="created" header="作成日" sortable style="width: 160px" />
-        <Column field="latest_update" header="更新日" sortable style="width: 160px" />
+        <Column field="created_at" header="作成日" sortable style="width: 160px" />
+        <Column field="updated_at" header="更新日" sortable style="width: 160px" />
 
         <template #empty>
           <div class="empty-message">このタグが付与された棋譜はありません</div>

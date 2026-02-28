@@ -81,7 +81,7 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
-      path: '/shared/:share_code',
+      path: '/shared/:shareCode',
       name: 'shared-kifu',
       component: () => import('@/pages/SharedKifuPage.vue'),
     },

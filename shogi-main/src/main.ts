@@ -7,16 +7,25 @@ import Aura from '@primeuix/themes/aura'
 import App from './App.vue'
 import router from './router'
 
-const app = createApp(App)
+async function bootstrap() {
+  if (import.meta.env.DEV) {
+    const { worker } = await import('./mocks/browser')
+    await worker.start({ onUnhandledRequest: 'bypass' })
+  }
 
-app.use(router)
-app.use(PrimeVue, {
-  theme: {
-    preset: Aura,
-    options: {
-      darkModeSelector: false,
+  const app = createApp(App)
+
+  app.use(router)
+  app.use(PrimeVue, {
+    theme: {
+      preset: Aura,
+      options: {
+        darkModeSelector: false,
+      },
     },
-  },
-})
+  })
 
-app.mount('#app')
+  app.mount('#app')
+}
+
+bootstrap()

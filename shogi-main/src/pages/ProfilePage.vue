@@ -3,15 +3,18 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
-import type { UserProfile } from '@/types/api'
-import { getMe } from '@/api/users'
+import type { User } from '@/api/generated/main/model'
+import { getMe } from '@/api/generated/main/users/users'
 
 const router = useRouter()
-const profile = ref<UserProfile | null>(null)
+const profile = ref<User | null>(null)
 const loading = ref(true)
 
 onMounted(async () => {
-  profile.value = await getMe()
+  const res = await getMe()
+  if (res.status === 200) {
+    profile.value = res.data
+  }
   loading.value = false
 })
 

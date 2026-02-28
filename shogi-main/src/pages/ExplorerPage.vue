@@ -4,13 +4,15 @@ import { useRoute, useRouter } from 'vue-router'
 import Breadcrumb from 'primevue/breadcrumb'
 import Card from 'primevue/card'
 import Button from 'primevue/button'
-import type { ExplorerResponse } from '@/types/api'
-import { getExplorer } from '@/api/kifus'
+import type { ExplorerResponse } from '@/api/generated/main/model'
+import { getKifuExplorer } from '@/api/generated/main/kifus/kifus'
+import { buildBreadcrumbs } from '@/utils/explorer'
 
 const route = useRoute()
 const router = useRouter()
 
 const explorer = ref<ExplorerResponse | null>(null)
+const currentPath = ref('')
 const loading = ref(true)
 
 const breadcrumbHome = { icon: 'pi pi-home', command: () => navigateToPath(undefined) }
@@ -18,12 +20,20 @@ const breadcrumbItems = ref<{ label: string; command: () => void }[]>([])
 
 async function loadExplorer(path?: string) {
   loading.value = true
-  explorer.value = await getExplorer(path)
-  breadcrumbItems.value = (explorer.value.breadcrumbs || []).map((b) => ({
-    label: b.name,
-    command: () => navigateToPath(b.path),
-  }))
+  const res = await getKifuExplorer(path ? { path } : undefined)
+  if (res.status === 200) {
+    explorer.value = res.data
+    currentPath.value = res.data.path
+    breadcrumbItems.value = buildBreadcrumbs(res.data.path).map((b) => ({
+      label: b.name,
+      command: () => navigateToPath(b.path),
+    }))
+  }
   loading.value = false
+}
+
+function getFolderPath(folderName: string): string {
+  return currentPath.value ? `${currentPath.value}/${folderName}` : folderName
 }
 
 function navigateToPath(path?: string) {
@@ -59,9 +69,9 @@ watch(
         <div class="folder-grid">
           <Card
             v-for="folder in explorer.folders"
-            :key="folder.path"
+            :key="folder.name"
             class="folder-card"
-            @click="navigateToPath(folder.path)"
+            @click="navigateToPath(getFolderPath(folder.name))"
           >
             <template #content>
               <div class="folder-content">

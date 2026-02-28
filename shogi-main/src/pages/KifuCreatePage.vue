@@ -9,34 +9,34 @@ import MultiSelect from 'primevue/multiselect'
 import Button from 'primevue/button'
 import SelectButton from 'primevue/selectbutton'
 import { ShogiBoard } from 'shogi-board'
-import type { KifuCreateRequest, Tag } from '@/types/api'
-import { createKifu } from '@/api/kifus'
-import { getTags } from '@/api/tags'
+import type { KifuCreateRequest, Tag, Side, Result } from '@/api/generated/main/model'
+import { createKifu } from '@/api/generated/main/kifus/kifus'
+import { getTags } from '@/api/generated/main/tags/tags'
 
 const router = useRouter()
 const boardRef = ref<InstanceType<typeof ShogiBoard>>()
 
 const slug = ref('')
 const memo = ref('')
-const firstOrSecond = ref('none')
-const result = ref('none')
-const share = ref(false)
+const side = ref<Side>('none')
+const result = ref<Result>('none')
+const shared = ref(false)
 const selectedTagIds = ref<string[]>([])
 const kifText = ref('')
 const inputMode = ref<'board' | 'text'>('board')
 const saving = ref(false)
 const tags = ref<Tag[]>([])
 
-const firstOrSecondOptions = [
+const sideOptions = [
   { label: 'なし', value: 'none' },
-  { label: '先手', value: 'first' },
-  { label: '後手', value: 'second' },
+  { label: '先手', value: 'sente' },
+  { label: '後手', value: 'gote' },
 ]
 
 const resultOptions = [
   { label: 'なし', value: 'none' },
   { label: '勝ち', value: 'win' },
-  { label: '負け', value: 'lose' },
+  { label: '負け', value: 'loss' },
   { label: '千日手', value: 'sennichite' },
   { label: '持将棋', value: 'jishogi' },
 ]
@@ -51,31 +51,35 @@ const tagOptions = computed(() =>
 )
 
 getTags().then((res) => {
-  tags.value = res.items
+  if (res.status === 200) {
+    tags.value = res.data.tags
+  }
 })
 
 async function handleSave() {
   saving.value = true
   try {
-    let kifuStr = ''
+    let kifStr = ''
     if (inputMode.value === 'board') {
-      kifuStr = boardRef.value?.getKif() ?? ''
+      kifStr = boardRef.value?.getKif() ?? ''
     } else {
-      kifuStr = kifText.value
+      kifStr = kifText.value
     }
 
     const req: KifuCreateRequest = {
       slug: slug.value,
-      kifu: kifuStr,
+      kif: kifStr,
       memo: memo.value,
-      first_or_second: firstOrSecond.value as KifuCreateRequest['first_or_second'],
-      result: result.value as KifuCreateRequest['result'],
-      share: share.value,
+      side: side.value,
+      result: result.value,
+      shared: shared.value,
       tag_ids: selectedTagIds.value,
     }
 
-    const created = await createKifu(req)
-    router.push(`/kifus/${created.kid}`)
+    const res = await createKifu(req)
+    if (res.status === 201) {
+      router.push(`/kifus/${res.data.kid}`)
+    }
   } finally {
     saving.value = false
   }
@@ -100,11 +104,11 @@ async function handleSave() {
 
       <div class="form-row">
         <div class="form-field">
-          <label for="first-or-second">先後</label>
+          <label for="side">先後</label>
           <Select
-            id="first-or-second"
-            v-model="firstOrSecond"
-            :options="firstOrSecondOptions"
+            id="side"
+            v-model="side"
+            :options="sideOptions"
             optionLabel="label"
             optionValue="value"
             class="w-full"
@@ -151,8 +155,8 @@ async function handleSave() {
       <div class="form-field">
         <label>共有</label>
         <div class="toggle-row">
-          <ToggleSwitch v-model="share" />
-          <span>{{ share ? '有効' : '無効' }}</span>
+          <ToggleSwitch v-model="shared" />
+          <span>{{ shared ? '有効' : '無効' }}</span>
         </div>
       </div>
 
