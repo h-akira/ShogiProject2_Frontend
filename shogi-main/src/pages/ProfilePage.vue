@@ -35,11 +35,6 @@ function handleChangePassword() {
     <template v-else-if="profile">
       <div class="profile-card">
         <div class="profile-field">
-          <span class="field-label">ユーザー名</span>
-          <span class="field-value">{{ profile.username }}</span>
-        </div>
-
-        <div class="profile-field">
           <span class="field-label">メールアドレス</span>
           <span class="field-value">
             {{ profile.email }}

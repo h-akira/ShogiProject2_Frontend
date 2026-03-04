@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import InputText from 'primevue/inputtext'
 import Button from 'primevue/button'
+import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
 import { getTag, updateTag } from '@/api/generated/main/tags/tags'
 
@@ -12,6 +13,7 @@ const tid = route.params.tid as string
 
 const name = ref('')
 const saving = ref(false)
+const errorMessage = ref('')
 const loading = ref(true)
 
 onMounted(async () => {
@@ -24,10 +26,15 @@ onMounted(async () => {
 
 async function handleSave() {
   if (!name.value.trim()) return
+  errorMessage.value = ''
   saving.value = true
   try {
-    await updateTag(tid, { name: name.value.trim() })
-    router.push('/tags')
+    const res = await updateTag(tid, { name: name.value.trim() })
+    if (res.status === 200) {
+      router.push('/tags')
+    } else if (res.status === 409) {
+      errorMessage.value = '同じ名前のタグが既に存在します'
+    }
   } finally {
     saving.value = false
   }
@@ -53,6 +60,10 @@ async function handleSave() {
             maxlength="127"
           />
         </div>
+
+        <Message v-if="errorMessage" severity="error" :closable="false">
+          {{ errorMessage }}
+        </Message>
 
         <div class="form-actions">
           <Button

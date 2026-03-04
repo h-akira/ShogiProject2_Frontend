@@ -7,6 +7,7 @@ import Select from 'primevue/select'
 import ToggleSwitch from 'primevue/toggleswitch'
 import MultiSelect from 'primevue/multiselect'
 import Button from 'primevue/button'
+import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
 import ProgressSpinner from 'primevue/progressspinner'
 import { ShogiBoard } from 'shogi-board'
@@ -29,6 +30,7 @@ const selectedTagIds = ref<string[]>([])
 const kifText = ref('')
 const inputMode = ref<'board' | 'text'>('board')
 const saving = ref(false)
+const errorMessage = ref('')
 const loading = ref(true)
 const tags = ref<Tag[]>([])
 
@@ -83,6 +85,7 @@ onMounted(async () => {
 })
 
 async function handleSave() {
+  errorMessage.value = ''
   saving.value = true
   try {
     let kifStr = ''
@@ -102,8 +105,12 @@ async function handleSave() {
       tag_ids: selectedTagIds.value,
     }
 
-    await updateKifu(kid, req)
-    router.push(`/kifus/${kid}`)
+    const res = await updateKifu(kid, req)
+    if (res.status === 200) {
+      router.push(`/kifus/${kid}`)
+    } else if (res.status === 409) {
+      errorMessage.value = '同じ名前の棋譜が既に存在します'
+    }
   } finally {
     saving.value = false
   }
@@ -210,6 +217,10 @@ async function handleSave() {
             class="w-full kif-textarea"
           />
         </div>
+
+        <Message v-if="errorMessage" severity="error" :closable="false">
+          {{ errorMessage }}
+        </Message>
 
         <div class="form-actions">
           <Button

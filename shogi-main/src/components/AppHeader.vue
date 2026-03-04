@@ -46,7 +46,7 @@ function handleLogout() {
       <div class="header-end">
         <template v-if="isAuthenticated">
           <Button
-            :label="user?.username"
+            :label="user?.email"
             icon="pi pi-user"
             text
             @click="router.push('/profile')"

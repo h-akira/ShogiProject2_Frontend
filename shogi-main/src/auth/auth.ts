@@ -3,7 +3,7 @@ import { ref, readonly } from 'vue'
 // Mock auth state — will be replaced with oidc-client-ts UserManager
 const isAuthenticated = ref(true)
 const user = ref<{ username: string; email: string } | null>({
-  username: 'hakira',
+  username: '550e8400-e29b-41d4-a716-446655440000',
   email: 'hakira@example.com',
 })
 
@@ -11,7 +11,7 @@ export function useAuth() {
   function login() {
     // Will be: userManager.signinRedirect()
     isAuthenticated.value = true
-    user.value = { username: 'hakira', email: 'hakira@example.com' }
+    user.value = { username: '550e8400-e29b-41d4-a716-446655440000', email: 'hakira@example.com' }
   }
 
   function logout() {

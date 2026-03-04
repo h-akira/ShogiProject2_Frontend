@@ -7,6 +7,7 @@ import Select from 'primevue/select'
 import ToggleSwitch from 'primevue/toggleswitch'
 import MultiSelect from 'primevue/multiselect'
 import Button from 'primevue/button'
+import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
 import { ShogiBoard } from 'shogi-board'
 import type { KifuCreateRequest, Tag, Side, Result } from '@/api/generated/main/model'
@@ -25,6 +26,7 @@ const selectedTagIds = ref<string[]>([])
 const kifText = ref('')
 const inputMode = ref<'board' | 'text'>('board')
 const saving = ref(false)
+const errorMessage = ref('')
 const tags = ref<Tag[]>([])
 
 const sideOptions = [
@@ -57,6 +59,7 @@ getTags().then((res) => {
 })
 
 async function handleSave() {
+  errorMessage.value = ''
   saving.value = true
   try {
     let kifStr = ''
@@ -79,6 +82,8 @@ async function handleSave() {
     const res = await createKifu(req)
     if (res.status === 201) {
       router.push(`/kifus/${res.data.kid}`)
+    } else if (res.status === 409) {
+      errorMessage.value = '同じ名前の棋譜が既に存在します'
     }
   } finally {
     saving.value = false
@@ -184,6 +189,10 @@ async function handleSave() {
           placeholder="KIF形式の棋譜データを貼り付け"
         />
       </div>
+
+      <Message v-if="errorMessage" severity="error" :closable="false">
+        {{ errorMessage }}
+      </Message>
 
       <div class="form-actions">
         <Button
