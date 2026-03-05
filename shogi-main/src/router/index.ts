@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/pages/HomePage.vue'
+import { useAuth } from '@/auth/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -88,11 +89,13 @@ const router = createRouter({
   ],
 })
 
-// Auth guard — mock: always passes
+// Auth guard
 router.beforeEach((to) => {
   if (to.meta.requiresAuth) {
-    // Will check oidc-client-ts UserManager in production
-    // Mock: always authenticated
+    const { isAuthenticated } = useAuth()
+    if (!isAuthenticated.value) {
+      return { name: 'home' }
+    }
   }
 })
 

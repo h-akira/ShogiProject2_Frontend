@@ -1,3 +1,5 @@
+import { getAccessToken } from '@/auth/auth'
+
 const MAIN_BASE_URL =
   import.meta.env.VITE_MAIN_API_BASE_URL || '/api/v1/main'
 const ANALYSIS_BASE_URL =
@@ -37,9 +39,4 @@ async function customFetch<T>(
   }
   const data = await res.json()
   return { data, status: res.status, headers: res.headers } as T
-}
-
-function getAccessToken(): string {
-  // TODO: Replace with Cognito token retrieval when auth is implemented
-  return 'TODO_ACCESS_TOKEN'
 }

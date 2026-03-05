@@ -1,23 +1,40 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import ProgressSpinner from 'primevue/progressspinner'
+import { exchangeCodeForTokens } from '@/auth/auth'
 
 const router = useRouter()
+const error = ref(false)
 
-onMounted(() => {
-  // Will be: await userManager.signinRedirectCallback()
-  // Mock: redirect to home after brief delay
-  setTimeout(() => {
+onMounted(async () => {
+  const params = new URLSearchParams(window.location.search)
+  const code = params.get('code')
+
+  if (!code) {
+    error.value = true
+    return
+  }
+
+  const success = await exchangeCodeForTokens(code)
+  if (success) {
     router.replace('/')
-  }, 500)
+  } else {
+    error.value = true
+  }
 })
 </script>
 
 <template>
   <div class="callback-page">
-    <ProgressSpinner />
-    <p>認証処理中...</p>
+    <template v-if="error">
+      <p>認証に失敗しました。もう一度ログインしてください。</p>
+      <router-link to="/">トップページへ</router-link>
+    </template>
+    <template v-else>
+      <ProgressSpinner />
+      <p>認証処理中...</p>
+    </template>
   </div>
 </template>
 

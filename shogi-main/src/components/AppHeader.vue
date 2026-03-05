@@ -31,6 +31,7 @@ const menuItems = computed(() => {
 
 function handleLogout() {
   logout()
+  // DEV 時は Cognito リダイレクトが発生しないのでルーターで遷移
   router.push('/')
 }
 </script>
