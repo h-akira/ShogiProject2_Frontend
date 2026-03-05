@@ -9,8 +9,8 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      - cd shogi-board && npm ci
-      - cd shogi-main && npm install
+      - cd shogi-board && npm ci && cd ..
+      - cd shogi-main && npm install && cd ..
 
   pre_build:
     commands:
@@ -51,7 +51,7 @@ phases:
 
   build:
     commands:
-      - cd shogi-main && npm run build
+      - cd shogi-main && npm run build && cd ..
 
   post_build:
     commands:
