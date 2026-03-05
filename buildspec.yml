@@ -24,9 +24,9 @@ phases:
           --region ${CDK_DEFAULT_REGION} \
           --query "Exports[?Name=='${PROJECT}-${ENV}-infra-CloudFrontDistributionId'].Value" \
           --output text)
-        CF_DOMAIN=$(aws cloudformation list-exports \
+        DOMAIN_NAME=$(aws cloudformation list-exports \
           --region ${CDK_DEFAULT_REGION} \
-          --query "Exports[?Name=='${PROJECT}-${ENV}-infra-CloudFrontDomainName'].Value" \
+          --query "Exports[?Name=='${PROJECT}-${ENV}-infra-DomainName'].Value" \
           --output text)
         COGNITO_CLIENT_ID=$(aws cloudformation list-exports \
           --region ${CDK_DEFAULT_REGION} \
@@ -46,7 +46,7 @@ phases:
       - export VITE_COGNITO_AUTHORITY="https://cognito-idp.${CDK_DEFAULT_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}"
       - export VITE_COGNITO_CLIENT_ID="${COGNITO_CLIENT_ID}"
       - export VITE_COGNITO_DOMAIN="${COGNITO_DOMAIN}"
-      - export VITE_REDIRECT_URI="https://${CF_DOMAIN}/callback"
+      - export VITE_REDIRECT_URI="https://${DOMAIN_NAME}/callback"
       - export VITE_API_BASE_URL="/api/v1"
 
   build:
