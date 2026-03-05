@@ -9,10 +9,11 @@ phases:
     runtime-versions:
       nodejs: 20
     commands:
-      # shogi-board (ライブラリ) のインストール
+      # shogi-board (ライブラリ) の依存インストール
       - npm ci --prefix shogi-board
-      # shogi-main (アプリ) のインストール
-      - npm ci --prefix shogi-main
+      # shogi-main (アプリ) の依存インストール
+      # file:../shogi-board のシンボリックリンクを正しく解決するため npm install を使用
+      - npm install --prefix shogi-main
 
   pre_build:
     commands:
