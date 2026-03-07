@@ -74,16 +74,23 @@ async function handleAnalysis() {
   const aid = createRes.data.aid
 
   // Poll for result
+  const maxPolls = Math.ceil(thinkingTime.value / 1000) + 15
+  let pollCount = 0
   const poll = async () => {
+    pollCount++
     const res = await getAnalysis(aid)
-    if (res.status === 200 && res.data.status === 'running') {
-      setTimeout(poll, 2000)
+    if (res.status === 200 && (res.data.status === 'pending' || res.data.status === 'running')) {
+      if (pollCount < maxPolls) {
+        setTimeout(poll, 1000)
+      } else {
+        analyzing.value = false
+      }
     } else if (res.status === 200) {
       analysisResult.value = res.data
       analyzing.value = false
     }
   }
-  poll()
+  setTimeout(poll, 1000)
 }
 
 function copyShareLink() {
