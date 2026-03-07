@@ -47,7 +47,13 @@ export function usiMovesToJapanese(sfen: string, usiMoves: string): string[] {
 
     let suffix = ''
     if (move.type === 'move' && move.promote) suffix = '成'
-    if (isDrop) suffix = '打'
+    if (move.type === 'move') {
+      const fromFile = 9 - move.from.col
+      const fromRank = move.from.row + 1
+      suffix += `(${fromFile}${fromRank})`
+    } else {
+      suffix = '(--)'
+    }
 
     result.push(turnMark + destStr + pieceName + suffix)
 
