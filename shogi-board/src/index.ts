@@ -18,3 +18,6 @@ export type {
 } from './core/types'
 
 export type { AppMode } from './composables/useMode'
+
+// Notation utilities
+export { usiMovesToJapanese } from './core/notation'

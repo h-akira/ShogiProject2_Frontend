@@ -7,7 +7,7 @@ import Dialog from 'primevue/dialog'
 import SelectButton from 'primevue/selectbutton'
 import Message from 'primevue/message'
 import ProgressSpinner from 'primevue/progressspinner'
-import { ShogiBoard } from 'shogi-board'
+import { ShogiBoard, usiMovesToJapanese } from 'shogi-board'
 import type { KifuDetail } from '@/api/generated/main/model'
 import { getKifu, deleteKifu, regenerateShareCode } from '@/api/generated/main/kifus/kifus'
 import { createAnalysis, getAnalysis } from '@/api/generated/analysis/analysis/analysis'
@@ -34,6 +34,10 @@ const thinkingTimeOptions = [
   { label: '5秒', value: 5000 },
   { label: '10秒', value: 10000 },
 ]
+
+function formatPv(sfen: string, pv: string): string {
+  return usiMovesToJapanese(sfen, pv).join(' ')
+}
 
 onMounted(async () => {
   const res = await getKifu(kid)
@@ -218,7 +222,7 @@ async function handleRegenerateShareCode() {
               >
                 <span class="candidate-rank">#{{ c.rank }}</span>
                 <span class="candidate-score">{{ c.score }}</span>
-                <span class="candidate-pv">{{ c.pv }}</span>
+                <span class="candidate-pv">{{ formatPv(analysisResult!.sfen, c.pv) }}</span>
               </div>
             </div>
 
