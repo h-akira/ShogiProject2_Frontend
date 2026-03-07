@@ -1,4 +1,4 @@
-import { getAccessToken } from '@/auth/auth'
+import { getIdToken } from '@/auth/auth'
 
 const MAIN_BASE_URL =
   import.meta.env.VITE_MAIN_API_BASE_URL || '/api/v1/main'
@@ -29,7 +29,7 @@ async function customFetch<T>(
   const res = await fetch(targetUrl, {
     ...options,
     headers: {
-      Authorization: `Bearer ${getAccessToken()}`,
+      Authorization: `Bearer ${getIdToken()}`,
       ...options.headers,
     },
   })

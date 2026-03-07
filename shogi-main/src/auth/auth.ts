@@ -167,3 +167,10 @@ export async function exchangeCodeForTokens(code: string): Promise<boolean> {
 export function getAccessToken(): string {
   return accessToken.value ?? ''
 }
+
+/**
+ * API Gateway Cognito Authorizer 用の ID トークンを取得する
+ */
+export function getIdToken(): string {
+  return idToken.value ?? ''
+}
