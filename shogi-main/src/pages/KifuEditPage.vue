@@ -230,7 +230,12 @@ function handleDiscard() {
         </div>
 
         <div v-if="inputMode === 'board'" class="board-container">
-          <ShogiBoard ref="boardRef" initialMode="input" />
+          <ShogiBoard
+            ref="boardRef"
+            initialMode="input"
+            resetLabel="変更を破棄"
+            @reset="discardDialogVisible = true"
+          />
         </div>
 
         <div v-else class="form-field">
@@ -253,12 +258,6 @@ function handleDiscard() {
             icon="pi pi-save"
             :loading="saving"
             @click="handleSave"
-          />
-          <Button
-            label="変更を破棄"
-            severity="warning"
-            outlined
-            @click="discardDialogVisible = true"
           />
           <Button
             label="キャンセル"

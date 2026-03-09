@@ -11,9 +11,15 @@ import InputControls from './InputControls.vue'
 
 const props = withDefaults(defineProps<{
   initialMode?: AppMode
+  resetLabel?: string
 }>(), {
   initialMode: 'input',
+  resetLabel: '初期局面に戻る',
 })
+
+const emit = defineEmits<{
+  reset: []
+}>()
 
 const modeCtrl = useMode(props.initialMode)
 
@@ -134,8 +140,9 @@ defineExpose({
     <InputControls
       v-if="mode === 'input'"
       :move-count="activeState.moveCount"
+      :reset-label="props.resetLabel"
       @undo="doUndo()"
-      @reset="reset()"
+      @reset="emit('reset')"
     />
 
     <!-- Game info -->

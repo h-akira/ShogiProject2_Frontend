@@ -176,7 +176,7 @@ async function handleSave() {
       </div>
 
       <div v-if="inputMode === 'board'" class="board-container">
-        <ShogiBoard ref="boardRef" initialMode="input" />
+        <ShogiBoard ref="boardRef" initialMode="input" @reset="boardRef?.reset()" />
       </div>
 
       <div v-else class="form-field">
