@@ -120,6 +120,7 @@ export function useMode(initialMode: AppMode = 'input') {
 
   function loadKif(kifStr: string) {
     playback.loadKif(kifStr)
+    inputGame.loadKif(kifStr)
     mode.value = 'playback'
     clearSelection()
   }

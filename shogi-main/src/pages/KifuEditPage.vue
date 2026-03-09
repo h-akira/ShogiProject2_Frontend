@@ -9,6 +9,7 @@ import MultiSelect from 'primevue/multiselect'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
 import SelectButton from 'primevue/selectbutton'
+import Dialog from 'primevue/dialog'
 import ProgressSpinner from 'primevue/progressspinner'
 import { ShogiBoard } from 'shogi-board'
 import type { KifuDetail, KifuUpdateRequest, Tag, Side, Result } from '@/api/generated/main/model'
@@ -33,6 +34,7 @@ const saving = ref(false)
 const errorMessage = ref('')
 const loading = ref(true)
 const tags = ref<Tag[]>([])
+const discardDialogVisible = ref(false)
 
 const sideOptions = [
   { label: 'なし', value: 'none' },
@@ -114,6 +116,29 @@ async function handleSave() {
   } finally {
     saving.value = false
   }
+}
+
+function handleDiscard() {
+  if (!kifu.value) return
+  const kifuData = kifu.value
+
+  slug.value = kifuData.slug.replace(/\.kif$/, '')
+  memo.value = kifuData.memo
+  side.value = kifuData.side
+  result.value = kifuData.result
+  shared.value = kifuData.shared
+  selectedTagIds.value = kifuData.tags.map((t) => t.tid)
+  kifText.value = kifuData.kif
+  errorMessage.value = ''
+
+  if (kifuData.kif) {
+    boardRef.value?.loadKif(kifuData.kif)
+    boardRef.value?.switchToInput()
+  } else {
+    boardRef.value?.reset()
+  }
+
+  discardDialogVisible.value = false
 }
 </script>
 
@@ -230,6 +255,12 @@ async function handleSave() {
             @click="handleSave"
           />
           <Button
+            label="変更を破棄"
+            severity="warning"
+            outlined
+            @click="discardDialogVisible = true"
+          />
+          <Button
             label="キャンセル"
             severity="secondary"
             outlined
@@ -238,6 +269,29 @@ async function handleSave() {
         </div>
       </div>
     </template>
+
+    <!-- Discard changes confirmation -->
+    <Dialog
+      v-model:visible="discardDialogVisible"
+      header="変更を破棄"
+      :modal="true"
+      :closable="true"
+    >
+      <p>編集内容を破棄して、保存済みの棋譜を復元しますか？</p>
+      <template #footer>
+        <Button
+          label="キャンセル"
+          severity="secondary"
+          outlined
+          @click="discardDialogVisible = false"
+        />
+        <Button
+          label="破棄する"
+          severity="warning"
+          @click="handleDiscard"
+        />
+      </template>
+    </Dialog>
   </div>
 </template>
 

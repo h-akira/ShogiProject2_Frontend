@@ -7,6 +7,7 @@ import Board from './Board.vue'
 import Hand from './Hand.vue'
 import GameInfo from './GameInfo.vue'
 import PlaybackControls from './PlaybackControls.vue'
+import InputControls from './InputControls.vue'
 
 const props = withDefaults(defineProps<{
   initialMode?: AppMode
@@ -127,6 +128,14 @@ defineExpose({
       @enter-continuation="enterContinuation()"
       @exit-continuation="exitContinuation()"
       @undo="doUndo()"
+    />
+
+    <!-- Input mode controls -->
+    <InputControls
+      v-if="mode === 'input'"
+      :move-count="activeState.moveCount"
+      @undo="doUndo()"
+      @reset="reset()"
     />
 
     <!-- Game info -->
