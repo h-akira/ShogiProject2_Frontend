@@ -11,7 +11,7 @@ export const worker = setupWorker(
   getGetKifuMockHandler((info) => ({
     kid: 'test-kid-001',
     slug: 'test-slug',
-    side: 'black',
+    side: 'sente',
     result: 'win',
     tags: [{ tid: 'tag-001', name: 'テストタグ' }],
     memo: 'テスト棋譜',
@@ -24,7 +24,7 @@ export const worker = setupWorker(
   getCreateKifuMockHandler((info) => ({
     kid: 'test-kid-002',
     slug: 'test-slug-2',
-    side: 'black',
+    side: 'sente',
     result: 'win',
     tags: [],
     memo: '',
@@ -37,7 +37,7 @@ export const worker = setupWorker(
   getUpdateKifuMockHandler((info) => ({
     kid: 'test-kid-001',
     slug: 'test-slug',
-    side: 'black',
+    side: 'sente',
     result: 'win',
     tags: [],
     memo: '',
@@ -50,7 +50,7 @@ export const worker = setupWorker(
   getGetSharedKifuMockHandler((info) => ({
     kid: 'shared-kid-001',
     slug: 'shared-slug',
-    side: 'black',
+    side: 'sente',
     result: 'win',
     tags: [{ tid: 'tag-001', name: 'テストタグ' }],
     memo: '共有テスト棋譜',
