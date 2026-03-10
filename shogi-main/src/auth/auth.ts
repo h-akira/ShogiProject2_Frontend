@@ -162,6 +162,56 @@ export async function exchangeCodeForTokens(code: string): Promise<boolean> {
 }
 
 /**
+ * リフレッシュトークンを使って新しいアクセストークン/IDトークンを取得する
+ * @returns 成功時 true、失敗時 false
+ */
+let refreshPromise: Promise<boolean> | null = null
+
+export async function refreshTokens(): Promise<boolean> {
+  if (IS_DEV) return false
+  // 同時に複数のリフレッシュリクエストが飛ばないよう直列化
+  if (refreshPromise) return refreshPromise
+  refreshPromise = doRefresh()
+  try {
+    return await refreshPromise
+  } finally {
+    refreshPromise = null
+  }
+}
+
+async function doRefresh(): Promise<boolean> {
+  const refreshToken = sessionStorage.getItem(REFRESH_TOKEN_KEY)
+  if (!refreshToken) return false
+
+  try {
+    const res = await fetch(`https://${COGNITO_DOMAIN}/oauth2/token`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        grant_type: 'refresh_token',
+        client_id: CLIENT_ID,
+        refresh_token: refreshToken,
+      }),
+    })
+    if (!res.ok) return false
+
+    const tokens = await res.json()
+    saveTokens(tokens)
+    return true
+  } catch {
+    return false
+  }
+}
+
+/**
+ * 認証切れ時に強制ログアウトする（custom-fetch から呼び出し用）
+ */
+export function forceLogout(): void {
+  const { logout } = useAuth()
+  logout()
+}
+
+/**
  * API 呼び出し用のアクセストークンを取得する
  */
 export function getAccessToken(): string {
