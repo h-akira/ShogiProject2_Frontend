@@ -93,6 +93,11 @@ async function handleAnalysis() {
   setTimeout(poll, 1000)
 }
 
+function copyKif() {
+  if (!kifu.value?.kif) return
+  navigator.clipboard.writeText(kifu.value.kif)
+}
+
 function copyShareLink() {
   if (!kifu.value) return
   const url = `${window.location.origin}/shared/${kifu.value.share_code}`
@@ -176,6 +181,14 @@ async function handleRegenerateShareCode() {
           <div v-if="kifu.memo" class="memo-section">
             <span class="meta-label">メモ</span>
             <p class="memo-text">{{ kifu.memo }}</p>
+          </div>
+
+          <div v-if="kifu.kif" class="kif-section">
+            <div class="kif-header">
+              <span class="meta-label">棋譜</span>
+              <Button icon="pi pi-copy" label="コピー" size="small" outlined @click="copyKif" />
+            </div>
+            <pre class="kif-text">{{ kifu.kif }}</pre>
           </div>
 
           <div v-if="kifu.shared" class="share-section">
@@ -375,6 +388,23 @@ async function handleRegenerateShareCode() {
 .memo-text {
   margin: 0;
   white-space: pre-wrap;
+}
+
+.kif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kif-text {
+  margin: 0.25rem 0 0;
+  padding: 0.5rem;
+  background: var(--p-surface-50, #f9fafb);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
 }
 
 .share-row {

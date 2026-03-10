@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import ProgressSpinner from 'primevue/progressspinner'
 import Message from 'primevue/message'
+import Button from 'primevue/button'
 import { ShogiBoard } from 'shogi-board'
 import type { SharedKifuDetail } from '@/api/generated/main/model'
 import { getSharedKifu } from '@/api/generated/main/shared/shared'
@@ -36,6 +37,11 @@ onMounted(async () => {
     loading.value = false
   }
 })
+
+function copyKif() {
+  if (!kifu.value?.kif) return
+  navigator.clipboard.writeText(kifu.value.kif)
+}
 </script>
 
 <template>
@@ -81,6 +87,14 @@ onMounted(async () => {
           <div v-if="kifu.memo" class="memo-section">
             <span class="meta-label">メモ</span>
             <p class="memo-text">{{ kifu.memo }}</p>
+          </div>
+
+          <div v-if="kifu.kif" class="kif-section">
+            <div class="kif-header">
+              <span class="meta-label">棋譜</span>
+              <Button icon="pi pi-copy" label="コピー" size="small" outlined @click="copyKif" />
+            </div>
+            <pre class="kif-text">{{ kifu.kif }}</pre>
           </div>
         </div>
       </div>
@@ -142,5 +156,22 @@ h1 {
 .memo-text {
   margin: 0;
   white-space: pre-wrap;
+}
+
+.kif-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.kif-text {
+  margin: 0.25rem 0 0;
+  padding: 0.5rem;
+  background: var(--p-surface-50, #f9fafb);
+  border-radius: 4px;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
+  max-height: 300px;
+  overflow-y: auto;
 }
 </style>
