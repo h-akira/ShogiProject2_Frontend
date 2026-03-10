@@ -26,6 +26,11 @@ const menuItems = computed(() => {
       icon: 'pi pi-tags',
       command: () => router.push('/tags'),
     },
+    {
+      label: '棋譜作成',
+      icon: 'pi pi-plus',
+      command: () => router.push('/kifus/new'),
+    },
   ]
 })
 

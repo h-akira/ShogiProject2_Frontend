@@ -45,7 +45,7 @@ async function handleDelete() {
     <div class="page-header">
       <h1>タグ一覧</h1>
       <Button
-        label="新規作成"
+        label="タグ作成"
         icon="pi pi-plus"
         @click="router.push('/tags/new')"
       />

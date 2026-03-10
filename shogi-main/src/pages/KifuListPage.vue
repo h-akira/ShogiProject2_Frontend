@@ -37,7 +37,7 @@ function onTagClick(tid: string) {
     <div class="page-header">
       <h1>マイページ</h1>
       <Button
-        label="新規作成"
+        label="棋譜作成"
         icon="pi pi-plus"
         @click="router.push('/kifus/new')"
       />

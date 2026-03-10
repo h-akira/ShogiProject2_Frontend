@@ -18,6 +18,17 @@ const router = useRouter()
 const boardRef = ref<InstanceType<typeof ShogiBoard>>()
 
 const slug = ref('')
+
+function generateSlug() {
+  const now = new Date()
+  const year = now.getFullYear()
+  const month = String(now.getMonth() + 1).padStart(2, '0')
+  const day = String(now.getDate()).padStart(2, '0')
+  const hours = String(now.getHours()).padStart(2, '0')
+  const minutes = String(now.getMinutes()).padStart(2, '0')
+  const seconds = String(now.getSeconds()).padStart(2, '0')
+  slug.value = `000_未分類/${year}/${month}${day}/${hours}${minutes}${seconds}`
+}
 const memo = ref('')
 const side = ref<Side>('none')
 const result = ref<Result>('none')
@@ -98,12 +109,21 @@ async function handleSave() {
     <div class="form-grid">
       <div class="form-field">
         <label for="slug">スラグ</label>
-        <InputText
-          id="slug"
-          v-model="slug"
-          placeholder="例: 2025/01/vs-tanaka"
-          class="w-full"
-        />
+        <div class="slug-row">
+          <InputText
+            id="slug"
+            v-model="slug"
+            placeholder="例: 2025/01/vs-tanaka"
+            class="slug-input"
+          />
+          <Button
+            label="自動生成"
+            icon="pi pi-refresh"
+            severity="secondary"
+            outlined
+            @click="generateSlug"
+          />
+        </div>
         <small>パス区切り「/」で階層化可能。.kif は自動付与</small>
       </div>
 
@@ -265,6 +285,16 @@ h1 {
 
 .board-container {
   max-width: 500px;
+}
+
+.slug-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.slug-input {
+  flex: 1;
 }
 
 .form-actions {
