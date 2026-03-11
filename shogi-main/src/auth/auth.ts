@@ -123,26 +123,11 @@ export function useAuth() {
     window.location.href = `https://${COGNITO_DOMAIN}/logout?${params}`
   }
 
-  function changePassword() {
-    if (IS_DEV) {
-      alert('パスワード変更は Cognito Managed Login で行います（DEV モック）')
-      return
-    }
-    const params = new URLSearchParams({
-      response_type: 'code',
-      client_id: CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
-      scope: SCOPES,
-    })
-    window.location.href = `https://${COGNITO_DOMAIN}/forgotPassword?${params}`
-  }
-
   return {
     isAuthenticated: readonly(isAuthenticated),
     user: readonly(user),
     login,
     logout,
-    changePassword,
   }
 }
 

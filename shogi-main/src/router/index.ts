@@ -76,6 +76,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/change-password',
+      name: 'change-password',
+      component: () => import('@/pages/ChangePasswordPage.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/delete-account',
       name: 'delete-account',
       component: () => import('@/pages/DeleteAccountPage.vue'),

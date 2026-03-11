@@ -46,6 +46,7 @@ phases:
       - export VITE_COGNITO_AUTHORITY="https://cognito-idp.${CDK_DEFAULT_REGION}.amazonaws.com/${COGNITO_USER_POOL_ID}"
       - export VITE_COGNITO_CLIENT_ID="${COGNITO_CLIENT_ID}"
       - export VITE_COGNITO_DOMAIN="${COGNITO_DOMAIN}"
+      - export VITE_COGNITO_REGION="${CDK_DEFAULT_REGION}"
       - export VITE_REDIRECT_URI="https://${DOMAIN_NAME}/callback"
       - export VITE_API_BASE_URL="/api/v1"
 
