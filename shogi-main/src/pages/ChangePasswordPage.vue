@@ -14,12 +14,10 @@ const currentPassword = ref('')
 const newPassword = ref('')
 const confirmPassword = ref('')
 const errorMessage = ref('')
-const successMessage = ref('')
 const submitting = ref(false)
 
 async function handleSubmit() {
   errorMessage.value = ''
-  successMessage.value = ''
 
   if (newPassword.value !== confirmPassword.value) {
     errorMessage.value = '新しいパスワードが一致しません'
@@ -30,10 +28,7 @@ async function handleSubmit() {
   try {
     if (IS_DEV) {
       // DEV: モック — 常に成功
-      successMessage.value = 'パスワードを変更しました'
-      currentPassword.value = ''
-      newPassword.value = ''
-      confirmPassword.value = ''
+      await router.push('/profile')
       return
     }
 
@@ -47,10 +42,7 @@ async function handleSubmit() {
         ProposedPassword: newPassword.value,
       }),
     )
-    successMessage.value = 'パスワードを変更しました'
-    currentPassword.value = ''
-    newPassword.value = ''
-    confirmPassword.value = ''
+    await router.push('/profile')
   } catch (e: unknown) {
     const msg = e instanceof Error ? e.message : '不明なエラーが発生しました'
     errorMessage.value = msg
@@ -67,7 +59,6 @@ const canSubmit = computed(() => currentPassword.value && newPassword.value && c
     <h1>パスワード変更</h1>
 
     <Message v-if="errorMessage" severity="error" :closable="false">{{ errorMessage }}</Message>
-    <Message v-if="successMessage" severity="success" :closable="false">{{ successMessage }}</Message>
 
     <div class="form-grid">
       <div class="form-field">

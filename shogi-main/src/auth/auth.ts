@@ -111,6 +111,25 @@ export function useAuth() {
     window.location.href = `https://${COGNITO_DOMAIN}/oauth2/authorize?${params}`
   }
 
+  async function signup() {
+    if (IS_DEV) {
+      saveTokens({ access_token: 'mock_access_token', id_token: 'mock_id_token' })
+      return
+    }
+    const { verifier, challenge } = await generatePkce()
+    sessionStorage.setItem(PKCE_VERIFIER_KEY, verifier)
+
+    const params = new URLSearchParams({
+      response_type: 'code',
+      client_id: CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
+      scope: SCOPES,
+      code_challenge_method: 'S256',
+      code_challenge: challenge,
+    })
+    window.location.href = `https://${COGNITO_DOMAIN}/signup?${params}`
+  }
+
   function logout() {
     clearTokens()
     if (IS_DEV) return
@@ -127,6 +146,7 @@ export function useAuth() {
     isAuthenticated: readonly(isAuthenticated),
     user: readonly(user),
     login,
+    signup,
     logout,
   }
 }

@@ -5,7 +5,7 @@ import Card from 'primevue/card'
 import { useAuth } from '@/auth/auth'
 
 const router = useRouter()
-const { isAuthenticated, login } = useAuth()
+const { isAuthenticated, login, signup } = useAuth()
 </script>
 
 <template>
@@ -24,7 +24,7 @@ const { isAuthenticated, login } = useAuth()
             icon="pi pi-user-plus"
             severity="secondary"
             outlined
-            @click="login"
+            @click="signup"
           />
         </div>
       </div>
