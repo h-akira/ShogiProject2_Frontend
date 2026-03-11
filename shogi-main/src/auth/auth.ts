@@ -6,7 +6,7 @@ const IS_DEV = import.meta.env.DEV
 const COGNITO_DOMAIN = import.meta.env.VITE_COGNITO_DOMAIN
 const CLIENT_ID = import.meta.env.VITE_COGNITO_CLIENT_ID
 const REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI
-const SCOPES = 'openid email profile'
+const SCOPES = 'openid email profile aws.cognito.signin.user.admin'
 
 // トークン保存キー
 const ACCESS_TOKEN_KEY = 'cognito_access_token'
