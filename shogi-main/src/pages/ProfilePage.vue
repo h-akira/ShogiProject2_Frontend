@@ -5,8 +5,10 @@ import Button from 'primevue/button'
 import ProgressSpinner from 'primevue/progressspinner'
 import type { User } from '@/api/generated/main/model'
 import { getMe } from '@/api/generated/main/users/users'
+import { useAuth } from '@/auth/auth'
 
 const router = useRouter()
+const { changePassword } = useAuth()
 const profile = ref<User | null>(null)
 const loading = ref(true)
 
@@ -17,11 +19,6 @@ onMounted(async () => {
   }
   loading.value = false
 })
-
-function handleChangePassword() {
-  // Will redirect to Cognito Managed Login change-password page
-  alert('パスワード変更は Cognito Managed Login で行います（モック）')
-}
 </script>
 
 <template>
@@ -54,7 +51,7 @@ function handleChangePassword() {
           icon="pi pi-lock"
           severity="secondary"
           outlined
-          @click="handleChangePassword"
+          @click="changePassword"
         />
         <Button
           label="アカウント削除"
