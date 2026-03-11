@@ -14,6 +14,7 @@ const { logout } = useAuth()
 const password = ref('')
 const confirmDialogVisible = ref(false)
 const deleting = ref(false)
+const errorMessage = ref('')
 
 function showConfirm() {
   if (!password.value) return
@@ -22,8 +23,13 @@ function showConfirm() {
 
 async function handleDelete() {
   deleting.value = true
+  errorMessage.value = ''
   try {
-    await deleteMe({ password: password.value })
+    const res = await deleteMe({ password: password.value })
+    if (res.status !== 204) {
+      errorMessage.value = res.data?.message || 'パスワードが正しくありません'
+      return
+    }
     logout()
     router.push('/')
   } finally {
@@ -40,6 +46,8 @@ async function handleDelete() {
     <Message severity="warn" :closable="false">
       アカウントを削除すると、すべての棋譜・タグデータが削除されます。この操作は取り消せません。
     </Message>
+
+    <Message v-if="errorMessage" severity="error" :closable="false">{{ errorMessage }}</Message>
 
     <div class="form-grid">
       <div class="form-field">
