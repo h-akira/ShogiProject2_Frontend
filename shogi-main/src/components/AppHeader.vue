@@ -55,6 +55,7 @@ function handleLogout() {
             :label="user?.email"
             icon="pi pi-user"
             text
+            class="header-user-btn"
             @click="router.push('/profile')"
           />
           <Button
@@ -62,6 +63,7 @@ function handleLogout() {
             icon="pi pi-sign-out"
             severity="secondary"
             text
+            class="header-logout-btn"
             @click="handleLogout"
           />
         </template>
@@ -99,5 +101,19 @@ function handleLogout() {
   display: flex;
   align-items: center;
   gap: 0.25rem;
+}
+
+@media screen and (max-width: 768px) {
+  .app-logo-text {
+    font-size: 1rem;
+  }
+
+  .header-user-btn :deep(.p-button-label) {
+    display: none;
+  }
+
+  .header-logout-btn :deep(.p-button-label) {
+    display: none;
+  }
 }
 </style>
