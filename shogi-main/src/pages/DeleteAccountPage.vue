@@ -34,7 +34,7 @@ async function handleDelete() {
     logout()
     router.push('/')
   } catch {
-    errorMessage.value = 'アカウント削除に失敗しました。時間をおいて再度お試しください。'
+    errorMessage.value = '通信エラーが発生しました。時間をおいて再度お試しください。'
   } finally {
     deleting.value = false
   }
