@@ -30,11 +30,13 @@ async function handleDelete() {
       errorMessage.value = res.data?.message || 'パスワードが正しくありません'
       return
     }
+    confirmDialogVisible.value = false
     logout()
     router.push('/')
+  } catch {
+    errorMessage.value = 'アカウント削除に失敗しました。時間をおいて再度お試しください。'
   } finally {
     deleting.value = false
-    confirmDialogVisible.value = false
   }
 }
 </script>
@@ -46,8 +48,6 @@ async function handleDelete() {
     <Message severity="warn" :closable="false">
       アカウントを削除すると、すべての棋譜・タグデータが削除されます。この操作は取り消せません。
     </Message>
-
-    <Message v-if="errorMessage" severity="error" :closable="false">{{ errorMessage }}</Message>
 
     <div class="form-grid">
       <div class="form-field">
@@ -86,6 +86,7 @@ async function handleDelete() {
       :closable="true"
     >
       <p>本当にアカウントを削除しますか？すべてのデータが失われます。</p>
+      <Message v-if="errorMessage" severity="error" :closable="false">{{ errorMessage }}</Message>
       <template #footer>
         <Button
           label="キャンセル"
