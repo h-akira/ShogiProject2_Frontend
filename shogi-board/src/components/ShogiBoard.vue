@@ -50,9 +50,9 @@ const {
 // Handle board click: playback mode uses tap navigation, other modes use selection
 const handleBoardClick = (pos: Position) => {
   if (mode.value === 'playback') {
-    if (pos.col <= 3) {
+    if (pos.col >= 5) {
       playback.goForward()
-    } else if (pos.col >= 6) {
+    } else if (pos.col <= 3) {
       playback.goBack()
     }
     return
