@@ -145,6 +145,49 @@ async function handleRegenerateShareCode() {
           <ShogiBoard ref="boardRef" initialMode="playback" />
         </div>
 
+        <!-- AI Analysis (separate grid item for responsive reordering) -->
+        <div class="analysis-section">
+          <h3>AI 局面解析</h3>
+          <div class="analysis-controls">
+            <SelectButton
+              v-model="thinkingTime"
+              :options="thinkingTimeOptions"
+              optionLabel="label"
+              optionValue="value"
+            />
+            <Button
+              label="解析"
+              icon="pi pi-play"
+              :loading="analyzing"
+              @click="handleAnalysis"
+            />
+          </div>
+
+          <div v-if="analyzing" class="analysis-loading">
+            <ProgressSpinner style="width: 30px; height: 30px" />
+            <span>解析中...</span>
+          </div>
+
+          <div v-if="analysisResult?.status === 'completed' && analysisResult.candidates" class="analysis-results">
+            <div
+              v-for="c in analysisResult.candidates"
+              :key="c.rank"
+              class="candidate"
+            >
+              <span class="candidate-rank">#{{ c.rank }}</span>
+              <span class="candidate-score">{{ c.score }}</span>
+              <span class="candidate-pv">{{ formatPv(analysisResult!.sfen, c.pv) }}</span>
+            </div>
+          </div>
+
+          <Message
+            v-if="analysisResult?.status === 'failed'"
+            severity="error"
+          >
+            解析に失敗しました
+          </Message>
+        </div>
+
         <div class="info-section">
           <div class="meta-grid">
             <div class="meta-item">
@@ -209,49 +252,6 @@ async function handleRegenerateShareCode() {
                 @click="regenerateDialogVisible = true"
               />
             </div>
-          </div>
-
-          <!-- AI Analysis -->
-          <div class="analysis-section">
-            <h3>AI 局面解析</h3>
-            <div class="analysis-controls">
-              <SelectButton
-                v-model="thinkingTime"
-                :options="thinkingTimeOptions"
-                optionLabel="label"
-                optionValue="value"
-              />
-              <Button
-                label="解析"
-                icon="pi pi-play"
-                :loading="analyzing"
-                @click="handleAnalysis"
-              />
-            </div>
-
-            <div v-if="analyzing" class="analysis-loading">
-              <ProgressSpinner style="width: 30px; height: 30px" />
-              <span>解析中...</span>
-            </div>
-
-            <div v-if="analysisResult?.status === 'completed' && analysisResult.candidates" class="analysis-results">
-              <div
-                v-for="c in analysisResult.candidates"
-                :key="c.rank"
-                class="candidate"
-              >
-                <span class="candidate-rank">#{{ c.rank }}</span>
-                <span class="candidate-score">{{ c.score }}</span>
-                <span class="candidate-pv">{{ formatPv(analysisResult!.sfen, c.pv) }}</span>
-              </div>
-            </div>
-
-            <Message
-              v-if="analysisResult?.status === 'failed'"
-              severity="error"
-            >
-              解析に失敗しました
-            </Message>
           </div>
         </div>
       </div>
@@ -332,18 +332,47 @@ async function handleRegenerateShareCode() {
 .detail-layout {
   display: grid;
   grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
   gap: 2rem;
   align-items: start;
+}
+
+.board-section {
+  max-width: 500px;
+  grid-column: 1;
+  grid-row: 1 / -1;
+}
+
+.analysis-section {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.info-section {
+  grid-column: 2;
+  grid-row: 2;
 }
 
 @media (max-width: 768px) {
   .detail-layout {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
   }
-}
 
-.board-section {
-  max-width: 500px;
+  .board-section {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .analysis-section {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .info-section {
+    grid-column: 1;
+    grid-row: 3;
+  }
 }
 
 .info-section {
@@ -421,8 +450,10 @@ async function handleRegenerateShareCode() {
 }
 
 .analysis-section {
-  border-top: 1px solid var(--p-surface-200, #e5e7eb);
-  padding-top: 1rem;
+  padding: 1rem;
+  background: var(--p-surface-50, #f9fafb);
+  border-radius: 8px;
+  border: 1px solid var(--p-surface-200, #e5e7eb);
 }
 
 .analysis-section h3 {
