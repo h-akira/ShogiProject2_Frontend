@@ -47,6 +47,21 @@ const {
   inputGame,
 } = modeCtrl
 
+// Handle board click: playback mode uses tap navigation, other modes use selection
+const handleBoardClick = (pos: Position) => {
+  if (mode.value === 'playback') {
+    if (pos.col <= 3) {
+      playback.goForward()
+    } else if (pos.col >= 6) {
+      playback.goBack()
+    }
+    return
+  }
+  if (isInteractive.value) {
+    handleSquareClick(pos)
+  }
+}
+
 // Selected position for board highlight
 const selectedPos = computed<Position | null>(() => {
   if (!isInteractive.value) return null
@@ -108,7 +123,7 @@ defineExpose({
       :selected-pos="selectedPos"
       :legal-targets="isInteractive ? legalTargets : []"
       :last-move="lastMove"
-      @square-click="(pos: Position) => isInteractive && handleSquareClick(pos)"
+      @square-click="(pos: Position) => handleBoardClick(pos)"
     />
 
     <!-- Sente hand (bottom) -->
