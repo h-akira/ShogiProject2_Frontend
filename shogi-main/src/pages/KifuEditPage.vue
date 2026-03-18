@@ -55,9 +55,7 @@ const inputModeOptions = [
   { label: 'テキスト', value: 'text' },
 ]
 
-const tagOptions = computed(() =>
-  tags.value.map((t) => ({ label: t.name, value: t.tid })),
-)
+const tagOptions = computed(() => tags.value.map((t) => ({ label: t.name, value: t.tid })))
 
 onMounted(async () => {
   const [kifuRes, tagRes] = await Promise.all([getKifu(kid), getTags()])
@@ -154,11 +152,7 @@ function handleDiscard() {
       <div class="form-grid">
         <div class="form-field">
           <label for="slug">スラグ</label>
-          <InputText
-            id="slug"
-            v-model="slug"
-            class="w-full"
-          />
+          <InputText id="slug" v-model="slug" class="w-full" />
           <small>パス区切り「/」で階層化可能。.kif は自動付与</small>
         </div>
 
@@ -203,12 +197,7 @@ function handleDiscard() {
 
         <div class="form-field">
           <label for="memo">メモ</label>
-          <Textarea
-            id="memo"
-            v-model="memo"
-            rows="3"
-            class="w-full"
-          />
+          <Textarea id="memo" v-model="memo" rows="3" class="w-full" />
         </div>
 
         <div class="form-field">
@@ -240,12 +229,7 @@ function handleDiscard() {
 
         <div v-else class="form-field">
           <label for="kif-text">KIF テキスト</label>
-          <Textarea
-            id="kif-text"
-            v-model="kifText"
-            rows="15"
-            class="w-full kif-textarea"
-          />
+          <Textarea id="kif-text" v-model="kifText" rows="15" class="w-full kif-textarea" />
         </div>
 
         <Message v-if="errorMessage" severity="error" :closable="false">
@@ -253,18 +237,8 @@ function handleDiscard() {
         </Message>
 
         <div class="form-actions">
-          <Button
-            label="更新"
-            icon="pi pi-save"
-            :loading="saving"
-            @click="handleSave"
-          />
-          <Button
-            label="キャンセル"
-            severity="secondary"
-            outlined
-            @click="router.back()"
-          />
+          <Button label="更新" icon="pi pi-save" :loading="saving" @click="handleSave" />
+          <Button label="キャンセル" severity="secondary" outlined @click="router.back()" />
         </div>
       </div>
     </template>
@@ -284,11 +258,7 @@ function handleDiscard() {
           outlined
           @click="discardDialogVisible = false"
         />
-        <Button
-          label="破棄する"
-          severity="warning"
-          @click="handleDiscard"
-        />
+        <Button label="破棄する" severity="warning" @click="handleDiscard" />
       </template>
     </Dialog>
   </div>

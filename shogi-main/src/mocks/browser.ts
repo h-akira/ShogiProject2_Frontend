@@ -1,9 +1,18 @@
 import { setupWorker } from 'msw/browser'
 import { getUsersMock } from '@/api/generated/main/users/users.msw'
-import { getGetRecentKifusMockHandler, getGetKifuExplorerMockHandler, getGetKifuMockHandler, getCreateKifuMockHandler, getUpdateKifuMockHandler } from '@/api/generated/main/kifus/kifus.msw'
+import {
+  getGetRecentKifusMockHandler,
+  getGetKifuExplorerMockHandler,
+  getGetKifuMockHandler,
+  getCreateKifuMockHandler,
+  getUpdateKifuMockHandler,
+} from '@/api/generated/main/kifus/kifus.msw'
 import { getGetSharedKifuMockHandler } from '@/api/generated/main/shared/shared.msw'
 import { getTagsMock } from '@/api/generated/main/tags/tags.msw'
-import { getCreateAnalysisMockHandler, getGetAnalysisMockHandler } from '@/api/generated/analysis/analysis/analysis.msw'
+import {
+  getCreateAnalysisMockHandler,
+  getGetAnalysisMockHandler,
+} from '@/api/generated/analysis/analysis/analysis.msw'
 import sampleKif from './sample.kif?raw'
 
 export const worker = setupWorker(
@@ -31,7 +40,10 @@ export const worker = setupWorker(
         slug: '20231225_vs_sato',
         side: 'sente',
         result: 'win',
-        tags: [{ tid: 'tag-001', name: '居飛車' }, { tid: 'tag-003', name: '角換わり' }],
+        tags: [
+          { tid: 'tag-001', name: '居飛車' },
+          { tid: 'tag-003', name: '角換わり' },
+        ],
         updated_at: '2023-12-25T09:00:00Z',
       },
       {
@@ -67,7 +79,7 @@ export const worker = setupWorker(
       { kid: 'test-kid-005', name: '20231210_vs_ito' },
     ],
   }),
-  getGetKifuMockHandler((info) => ({
+  getGetKifuMockHandler((_info) => ({
     kid: 'test-kid-001',
     slug: 'test-slug',
     side: 'sente',
@@ -80,7 +92,7 @@ export const worker = setupWorker(
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-01T00:00:00Z',
   })),
-  getCreateKifuMockHandler((info) => ({
+  getCreateKifuMockHandler((_info) => ({
     kid: 'test-kid-002',
     slug: 'test-slug-2',
     side: 'sente',
@@ -93,7 +105,7 @@ export const worker = setupWorker(
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-01T00:00:00Z',
   })),
-  getUpdateKifuMockHandler((info) => ({
+  getUpdateKifuMockHandler((_info) => ({
     kid: 'test-kid-001',
     slug: 'test-slug',
     side: 'sente',
@@ -106,7 +118,7 @@ export const worker = setupWorker(
     created_at: '2024-01-01T00:00:00Z',
     updated_at: '2024-01-01T00:00:00Z',
   })),
-  getGetSharedKifuMockHandler((info) => ({
+  getGetSharedKifuMockHandler((_info) => ({
     kid: 'shared-kid-001',
     slug: 'shared-slug',
     side: 'sente',
@@ -122,7 +134,7 @@ export const worker = setupWorker(
     aid: 'mock-aid-001',
     status: 'pending',
   }),
-  getGetAnalysisMockHandler((info) => ({
+  getGetAnalysisMockHandler((_info) => ({
     aid: 'mock-aid-001',
     status: 'completed',
     sfen: 'lnsgkgsnl/1r5b1/ppppppppp/9/9/9/PPPPPPPPP/1B5R1/LNSGKGSNL b - 1',

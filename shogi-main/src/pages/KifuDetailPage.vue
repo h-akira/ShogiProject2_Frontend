@@ -155,12 +155,7 @@ async function handleRegenerateShareCode() {
               optionLabel="label"
               optionValue="value"
             />
-            <Button
-              label="解析"
-              icon="pi pi-play"
-              :loading="analyzing"
-              @click="handleAnalysis"
-            />
+            <Button label="解析" icon="pi pi-play" :loading="analyzing" @click="handleAnalysis" />
           </div>
 
           <div v-if="analyzing" class="analysis-loading">
@@ -168,22 +163,18 @@ async function handleRegenerateShareCode() {
             <span>解析中...</span>
           </div>
 
-          <div v-if="analysisResult?.status === 'completed' && analysisResult.candidates" class="analysis-results">
-            <div
-              v-for="c in analysisResult.candidates"
-              :key="c.rank"
-              class="candidate"
-            >
+          <div
+            v-if="analysisResult?.status === 'completed' && analysisResult.candidates"
+            class="analysis-results"
+          >
+            <div v-for="c in analysisResult.candidates" :key="c.rank" class="candidate">
               <span class="candidate-rank">#{{ c.rank }}</span>
               <span class="candidate-score">{{ c.score }}</span>
               <span class="candidate-pv">{{ formatPv(analysisResult!.sfen, c.pv) }}</span>
             </div>
           </div>
 
-          <Message
-            v-if="analysisResult?.status === 'failed'"
-            severity="error"
-          >
+          <Message v-if="analysisResult?.status === 'failed'" severity="error">
             解析に失敗しました
           </Message>
         </div>
@@ -238,12 +229,7 @@ async function handleRegenerateShareCode() {
             <span class="meta-label">共有リンク</span>
             <div class="share-row">
               <code class="share-code">/shared/{{ kifu.share_code?.slice(0, 12) }}...</code>
-              <Button
-                icon="pi pi-copy"
-                text
-                size="small"
-                @click="copyShareLink"
-              />
+              <Button icon="pi pi-copy" text size="small" @click="copyShareLink" />
               <Button
                 icon="pi pi-refresh"
                 text
@@ -272,11 +258,7 @@ async function handleRegenerateShareCode() {
           outlined
           @click="deleteDialogVisible = false"
         />
-        <Button
-          label="削除"
-          severity="danger"
-          @click="handleDelete"
-        />
+        <Button label="削除" severity="danger" @click="handleDelete" />
       </template>
     </Dialog>
 
@@ -295,11 +277,7 @@ async function handleRegenerateShareCode() {
           outlined
           @click="regenerateDialogVisible = false"
         />
-        <Button
-          label="再生成"
-          severity="warning"
-          @click="handleRegenerateShareCode"
-        />
+        <Button label="再生成" severity="warning" @click="handleRegenerateShareCode" />
       </template>
     </Dialog>
   </div>

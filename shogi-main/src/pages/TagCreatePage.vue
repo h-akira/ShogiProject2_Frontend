@@ -57,12 +57,7 @@ async function handleSave() {
           :disabled="!name.trim()"
           @click="handleSave"
         />
-        <Button
-          label="キャンセル"
-          severity="secondary"
-          outlined
-          @click="router.back()"
-        />
+        <Button label="キャンセル" severity="secondary" outlined @click="router.back()" />
       </div>
     </div>
   </div>

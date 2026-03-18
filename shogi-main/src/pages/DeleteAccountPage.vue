@@ -70,21 +70,11 @@ async function handleDelete() {
           :disabled="!password"
           @click="showConfirm"
         />
-        <Button
-          label="キャンセル"
-          severity="secondary"
-          outlined
-          @click="router.back()"
-        />
+        <Button label="キャンセル" severity="secondary" outlined @click="router.back()" />
       </div>
     </div>
 
-    <Dialog
-      v-model:visible="confirmDialogVisible"
-      header="最終確認"
-      :modal="true"
-      :closable="true"
-    >
+    <Dialog v-model:visible="confirmDialogVisible" header="最終確認" :modal="true" :closable="true">
       <p>本当にアカウントを削除しますか？すべてのデータが失われます。</p>
       <Message v-if="errorMessage" severity="error" :closable="false">{{ errorMessage }}</Message>
       <template #footer>
@@ -94,12 +84,7 @@ async function handleDelete() {
           outlined
           @click="confirmDialogVisible = false"
         />
-        <Button
-          label="削除する"
-          severity="danger"
-          :loading="deleting"
-          @click="handleDelete"
-        />
+        <Button label="削除する" severity="danger" :loading="deleting" @click="handleDelete" />
       </template>
     </Dialog>
   </div>

@@ -36,11 +36,7 @@ function onTagClick(tid: string) {
   <div class="kifu-list-page">
     <div class="page-header">
       <h1>マイページ</h1>
-      <Button
-        label="棋譜作成"
-        icon="pi pi-plus"
-        @click="router.push('/kifus/new')"
-      />
+      <Button label="棋譜作成" icon="pi pi-plus" @click="router.push('/kifus/new')" />
     </div>
 
     <div v-if="!loading" class="summary-section">
@@ -57,8 +53,8 @@ function onTagClick(tid: string) {
       :loading="loading"
       stripedRows
       selectionMode="single"
-      @row-click="onRowClick"
       class="kifu-table"
+      @row-click="onRowClick"
     >
       <Column field="slug" header="スラグ" sortable />
       <Column field="side" header="先後" sortable style="width: 80px">

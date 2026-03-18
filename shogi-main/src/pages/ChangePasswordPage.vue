@@ -4,7 +4,10 @@ import { useRouter } from 'vue-router'
 import Password from 'primevue/password'
 import Button from 'primevue/button'
 import Message from 'primevue/message'
-import { CognitoIdentityProviderClient, ChangePasswordCommand } from '@aws-sdk/client-cognito-identity-provider'
+import {
+  CognitoIdentityProviderClient,
+  ChangePasswordCommand,
+} from '@aws-sdk/client-cognito-identity-provider'
 import { getAccessToken } from '@/auth/auth'
 
 const IS_DEV = import.meta.env.DEV
@@ -51,7 +54,9 @@ async function handleSubmit() {
   }
 }
 
-const canSubmit = computed(() => currentPassword.value && newPassword.value && confirmPassword.value)
+const canSubmit = computed(
+  () => currentPassword.value && newPassword.value && confirmPassword.value,
+)
 </script>
 
 <template>
@@ -105,12 +110,7 @@ const canSubmit = computed(() => currentPassword.value && newPassword.value && c
           :loading="submitting"
           @click="handleSubmit"
         />
-        <Button
-          label="キャンセル"
-          severity="secondary"
-          outlined
-          @click="router.back()"
-        />
+        <Button label="キャンセル" severity="secondary" outlined @click="router.back()" />
       </div>
     </div>
   </div>

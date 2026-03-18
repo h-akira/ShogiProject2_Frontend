@@ -53,12 +53,7 @@ async function handleSave() {
       <div class="form-grid">
         <div class="form-field">
           <label for="tag-name">タグ名</label>
-          <InputText
-            id="tag-name"
-            v-model="name"
-            class="w-full"
-            maxlength="127"
-          />
+          <InputText id="tag-name" v-model="name" class="w-full" maxlength="127" />
         </div>
 
         <Message v-if="errorMessage" severity="error" :closable="false">
@@ -73,12 +68,7 @@ async function handleSave() {
             :disabled="!name.trim()"
             @click="handleSave"
           />
-          <Button
-            label="キャンセル"
-            severity="secondary"
-            outlined
-            @click="router.back()"
-          />
+          <Button label="キャンセル" severity="secondary" outlined @click="router.back()" />
         </div>
       </div>
     </template>

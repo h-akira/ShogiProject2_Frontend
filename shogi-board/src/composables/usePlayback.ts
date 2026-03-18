@@ -23,7 +23,7 @@ export function usePlayback() {
     if (idx >= totalMoves.value) {
       return fullState.value
     }
-    const moves = fullState.value.history.map(r => r.move)
+    const moves = fullState.value.history.map((r) => r.move)
     return replayToMove(initialState.value, moves, idx)
   })
 

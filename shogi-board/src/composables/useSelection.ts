@@ -7,10 +7,7 @@ export type SelectionState =
   | { mode: 'board'; pos: Position }
   | { mode: 'hand'; pieceType: PieceType }
 
-export function useSelection(
-  getState: () => GameState,
-  onMove: (move: Move) => void,
-) {
+export function useSelection(getState: () => GameState, onMove: (move: Move) => void) {
   const selection = ref<SelectionState>({ mode: 'none' })
   const promotionPending = ref<{ moves: [BoardMove, BoardMove] } | null>(null)
 
@@ -21,12 +18,14 @@ export function useSelection(
       const moves = getLegalBoardMoves(state, sel.pos)
       // Deduplicate targets (promote and no-promote go to same square)
       const seen = new Set<string>()
-      return moves.filter(m => {
-        const key = `${m.to.row},${m.to.col}`
-        if (seen.has(key)) return false
-        seen.add(key)
-        return true
-      }).map(m => m.to)
+      return moves
+        .filter((m) => {
+          const key = `${m.to.row},${m.to.col}`
+          if (seen.has(key)) return false
+          seen.add(key)
+          return true
+        })
+        .map((m) => m.to)
     }
     if (sel.mode === 'hand') {
       return getLegalDropPositions(state, sel.pieceType)
@@ -81,7 +80,7 @@ export function useSelection(
       }
 
       // Check if target is in legal moves
-      const isLegal = legalTargets.value.some(t => t.row === pos.row && t.col === pos.col)
+      const isLegal = legalTargets.value.some((t) => t.row === pos.row && t.col === pos.col)
       if (!isLegal) {
         clearSelection()
         return
@@ -110,7 +109,7 @@ export function useSelection(
     }
 
     if (sel.mode === 'hand') {
-      const isLegal = legalTargets.value.some(t => t.row === pos.row && t.col === pos.col)
+      const isLegal = legalTargets.value.some((t) => t.row === pos.row && t.col === pos.col)
       if (!isLegal) {
         clearSelection()
         return

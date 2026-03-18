@@ -24,12 +24,7 @@ defineEmits<{
     }"
     @click="$emit('click')"
   >
-    <Piece
-      v-if="piece"
-      :type="piece.type"
-      :owner="piece.owner"
-      :promoted="piece.promoted"
-    />
+    <Piece v-if="piece" :type="piece.type" :owner="piece.owner" :promoted="piece.promoted" />
     <span v-if="isLegalTarget && !piece" class="move-dot" />
   </div>
 </template>

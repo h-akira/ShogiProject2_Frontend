@@ -2,15 +2,7 @@
 export type Player = 'sente' | 'gote'
 
 // Piece types (unpromoted)
-export type PieceType =
-  | 'king'
-  | 'rook'
-  | 'bishop'
-  | 'gold'
-  | 'silver'
-  | 'knight'
-  | 'lance'
-  | 'pawn'
+export type PieceType = 'king' | 'rook' | 'bishop' | 'gold' | 'silver' | 'knight' | 'lance' | 'pawn'
 
 // Piece on board
 export interface Piece {

@@ -25,14 +25,14 @@ const ZENKAKU_NUMS = ['１', '２', '３', '４', '５', '６', '７', '８', '�
 const KANJI_NUMS = ['一', '二', '三', '四', '五', '六', '七', '八', '九']
 // KIF piece name for moves (use the name BEFORE promotion)
 const KIF_PIECE_NAME: Record<PieceType, { normal: string; promoted: string }> = {
-  king:   { normal: '玉', promoted: '' },
-  rook:   { normal: '飛', promoted: '龍' },
+  king: { normal: '玉', promoted: '' },
+  rook: { normal: '飛', promoted: '龍' },
   bishop: { normal: '角', promoted: '馬' },
-  gold:   { normal: '金', promoted: '' },
+  gold: { normal: '金', promoted: '' },
   silver: { normal: '銀', promoted: '成銀' },
   knight: { normal: '桂', promoted: '成桂' },
-  lance:  { normal: '香', promoted: '成香' },
-  pawn:   { normal: '歩', promoted: 'と' },
+  lance: { normal: '香', promoted: '成香' },
+  pawn: { normal: '歩', promoted: 'と' },
 }
 
 // -------------------------------------------------------
@@ -41,7 +41,7 @@ const KIF_PIECE_NAME: Record<PieceType, { normal: string; promoted: string }> = 
 
 function posToKif(pos: Position): string {
   const file = 9 - pos.col // 1-9
-  const rank = pos.row      // 0-8
+  const rank = pos.row // 0-8
   return `${ZENKAKU_NUMS[file - 1]}${KANJI_NUMS[rank]}`
 }
 
@@ -76,7 +76,7 @@ export function toKif(state: GameState, metadata?: KifMetadata): string {
     const move = record.move
     const moveNum = i + 1
 
-    let moveStr = ''
+    let moveStr: string
     if (move.type === 'move') {
       // Destination
       const isSame = prevTo && prevTo.row === move.to.row && prevTo.col === move.to.col
@@ -92,7 +92,7 @@ export function toKif(state: GameState, metadata?: KifMetadata): string {
       const pieceName = getPieceNameForHistory(state, i)
       const promoteStr = move.promote ? '成' : ''
       // Check if promotion was optional but declined
-      const declineStr = (!move.promote && shouldShowFunari(state, i)) ? '不成' : ''
+      const declineStr = !move.promote && shouldShowFunari(state, i) ? '不成' : ''
       const origin = posToOrigin(move.from)
 
       moveStr = `${destStr}${pieceName}${promoteStr}${declineStr}${origin}`
@@ -148,8 +148,7 @@ function shouldShowFunari(state: GameState, moveIndex: number): boolean {
   const piece = s.board[move.from.row]![move.from.col]
   if (!piece || piece.promoted) return false
 
-  const isInEnemyZone = (row: number, owner: Player) =>
-    owner === 'sente' ? row <= 2 : row >= 6
+  const isInEnemyZone = (row: number, owner: Player) => (owner === 'sente' ? row <= 2 : row >= 6)
   return isInEnemyZone(move.to.row, piece.owner) || isInEnemyZone(move.from.row, piece.owner)
 }
 
@@ -182,7 +181,12 @@ export function parseKif(kif: string): { state: GameState; metadata: KifMetadata
     const move = parseMoveLineToMove(line, state, prevTo)
     if (!move) {
       // Could be result line like "投了" or "まで..."
-      if (line.includes('投了') || line.includes('詰み') || line.includes('中断') || line.includes('千日手')) {
+      if (
+        line.includes('投了') ||
+        line.includes('詰み') ||
+        line.includes('中断') ||
+        line.includes('千日手')
+      ) {
         metadata.result = line.replace(/^\s*\d+\s*/, '')
       }
       continue
@@ -201,17 +205,37 @@ function parseHeaderLine(line: string, metadata: KifMetadata): void {
   const key = match[1]!
   const value = match[2]!
   switch (key) {
-    case '開始日時': metadata.startDate = value; break
-    case '終了日時': metadata.endDate = value; break
-    case '棋戦': metadata.event = value; break
-    case '戦型': metadata.strategy = value; break
-    case '手合割': metadata.handicap = value; break
-    case '先手': case '下手': metadata.senteName = value; break
-    case '後手': case '上手': metadata.goteName = value; break
+    case '開始日時':
+      metadata.startDate = value
+      break
+    case '終了日時':
+      metadata.endDate = value
+      break
+    case '棋戦':
+      metadata.event = value
+      break
+    case '戦型':
+      metadata.strategy = value
+      break
+    case '手合割':
+      metadata.handicap = value
+      break
+    case '先手':
+    case '下手':
+      metadata.senteName = value
+      break
+    case '後手':
+    case '上手':
+      metadata.goteName = value
+      break
   }
 }
 
-function parseMoveLineToMove(line: string, _state: GameState, prevTo: Position | null): Move | null {
+function parseMoveLineToMove(
+  line: string,
+  _state: GameState,
+  prevTo: Position | null,
+): Move | null {
   // Match: [number] [move content]
   // Time info like (00:01/00:05:23) may follow, but origin (xy) must be preserved
   const match = line.match(/^\s*(\d+)\s+(.+?)\s*$/)
@@ -237,7 +261,7 @@ function parseMoveLineToMove(line: string, _state: GameState, prevTo: Position |
   }
 
   // Parse board move
-  let to: Position | null = null
+  let to: Position | null
   let rest = moveStr
 
   // Check for "同" (same square as previous move)

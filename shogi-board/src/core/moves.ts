@@ -1,7 +1,13 @@
 import type { Board, Piece, Position, Player } from './types'
 import {
-  KING_DIRS, GOLD_DIRS, SILVER_DIRS, PAWN_DIRS,
-  KNIGHT_DIRS, ROOK_DIRS, BISHOP_DIRS, LANCE_DIRS,
+  KING_DIRS,
+  GOLD_DIRS,
+  SILVER_DIRS,
+  PAWN_DIRS,
+  KNIGHT_DIRS,
+  ROOK_DIRS,
+  BISHOP_DIRS,
+  LANCE_DIRS,
   type Direction,
 } from './constants'
 
@@ -146,7 +152,7 @@ export function isSquareAttackedBy(board: Board, target: Position, attacker: Pla
       const pc = board[r]![c]
       if (!pc || pc.owner !== attacker) continue
       const moves = getPieceMovements(board, { row: r, col: c }, pc)
-      if (moves.some(m => m.row === target.row && m.col === target.col)) {
+      if (moves.some((m) => m.row === target.row && m.col === target.col)) {
         return true
       }
     }

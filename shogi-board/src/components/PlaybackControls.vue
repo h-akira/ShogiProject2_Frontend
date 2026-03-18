@@ -29,10 +29,22 @@ function onSliderInput(event: Event) {
     <!-- Playback mode -->
     <template v-if="mode === 'playback'">
       <div class="nav-buttons">
-        <button :disabled="currentMoveIndex <= 0" @click="$emit('goToStart')" title="最初">|&#9665;</button>
-        <button :disabled="currentMoveIndex <= 0" @click="$emit('goBack')" title="一手戻す">&#9665;</button>
-        <button :disabled="currentMoveIndex >= totalMoves" @click="$emit('goForward')" title="一手進む">&#9655;</button>
-        <button :disabled="currentMoveIndex >= totalMoves" @click="$emit('goToEnd')" title="最終">&#9655;|</button>
+        <button :disabled="currentMoveIndex <= 0" title="最初" @click="$emit('goToStart')">
+          |&#9665;
+        </button>
+        <button :disabled="currentMoveIndex <= 0" title="一手戻す" @click="$emit('goBack')">
+          &#9665;
+        </button>
+        <button
+          :disabled="currentMoveIndex >= totalMoves"
+          title="一手進む"
+          @click="$emit('goForward')"
+        >
+          &#9655;
+        </button>
+        <button :disabled="currentMoveIndex >= totalMoves" title="最終" @click="$emit('goToEnd')">
+          &#9655;|
+        </button>
       </div>
       <div class="slider-row">
         <input

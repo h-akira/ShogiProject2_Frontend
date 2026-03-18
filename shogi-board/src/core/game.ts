@@ -6,7 +6,7 @@ import { createHirateBoard, createEmptyHands } from './constants'
 // -------------------------------------------------------
 
 function cloneBoard(board: Board): Board {
-  return board.map(row => row.map(cell => (cell ? { ...cell } : null)))
+  return board.map((row) => row.map((cell) => (cell ? { ...cell } : null)))
 }
 
 function cloneHands(hands: Hands): Hands {
@@ -60,9 +60,7 @@ export function applyMove(state: GameState, move: Move): GameState {
     board[move.from.row]![move.from.col] = null
 
     // Place piece (possibly promoted) at destination
-    board[move.to.row]![move.to.col] = move.promote
-      ? { ...piece, promoted: true }
-      : { ...piece }
+    board[move.to.row]![move.to.col] = move.promote ? { ...piece, promoted: true } : { ...piece }
 
     // Add captured piece to hand (demoted)
     if (captured) {

@@ -3,7 +3,6 @@ import { ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Breadcrumb from 'primevue/breadcrumb'
 import Card from 'primevue/card'
-import Button from 'primevue/button'
 import type { ExplorerResponse } from '@/api/generated/main/model'
 import { getKifuExplorer } from '@/api/generated/main/kifus/kifus'
 import { buildBreadcrumbs } from '@/utils/explorer'
@@ -102,10 +101,7 @@ watch(
         </div>
       </div>
 
-      <div
-        v-if="!explorer.folders.length && !explorer.files.length"
-        class="empty-message"
-      >
+      <div v-if="!explorer.folders.length && !explorer.files.length" class="empty-message">
         このフォルダは空です
       </div>
     </template>
@@ -144,7 +140,9 @@ h1 {
 
 .folder-card {
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
 }
 
 .folder-card:hover {

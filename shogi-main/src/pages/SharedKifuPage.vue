@@ -51,9 +51,7 @@ function copyKif() {
     </template>
 
     <template v-else-if="error">
-      <Message severity="error" :closable="false">
-        共有棋譜が見つかりません
-      </Message>
+      <Message severity="error" :closable="false"> 共有棋譜が見つかりません </Message>
     </template>
 
     <template v-else-if="kifu">

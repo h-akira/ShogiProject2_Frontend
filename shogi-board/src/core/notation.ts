@@ -29,12 +29,10 @@ export function usiMovesToJapanese(sfen: string, usiMoves: string): string[] {
     const turnMark = state.turn === 'sente' ? '▲' : '△'
 
     let pieceName: string
-    let isDrop = false
 
     if (move.type === 'drop') {
       const disp = PIECE_DISPLAY[move.pieceType]
       pieceName = disp.normal
-      isDrop = true
     } else {
       const piece = state.board[move.from.row]![move.from.col]!
       const disp = PIECE_DISPLAY[piece.type]

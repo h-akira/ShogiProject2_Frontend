@@ -1,10 +1,13 @@
 <script setup lang="ts">
-withDefaults(defineProps<{
-  moveCount: number
-  resetLabel?: string
-}>(), {
-  resetLabel: '初期局面に戻る',
-})
+withDefaults(
+  defineProps<{
+    moveCount: number
+    resetLabel?: string
+  }>(),
+  {
+    resetLabel: '初期局面に戻る',
+  },
+)
 
 defineEmits<{
   undo: []
@@ -14,8 +17,8 @@ defineEmits<{
 
 <template>
   <div class="input-controls">
-    <button :disabled="moveCount <= 0" @click="$emit('undo')" title="一手戻す">一手戻す</button>
-    <button @click="$emit('reset')" :title="resetLabel" class="reset-btn">{{ resetLabel }}</button>
+    <button :disabled="moveCount <= 0" title="一手戻す" @click="$emit('undo')">一手戻す</button>
+    <button :title="resetLabel" class="reset-btn" @click="$emit('reset')">{{ resetLabel }}</button>
   </div>
 </template>
 

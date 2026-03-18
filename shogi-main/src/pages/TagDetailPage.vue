@@ -45,9 +45,7 @@ async function handleDelete() {
       <div class="page-header">
         <div>
           <h1>タグ: {{ tag.name }}</h1>
-          <p class="tag-meta">
-            {{ tag.kifus.length }} 件の棋譜
-          </p>
+          <p class="tag-meta">{{ tag.kifus.length }} 件の棋譜</p>
         </div>
         <div class="header-actions">
           <Button
@@ -71,8 +69,8 @@ async function handleDelete() {
         :value="tag.kifus"
         stripedRows
         selectionMode="single"
-        @row-click="onRowClick"
         class="kifu-table"
+        @row-click="onRowClick"
       >
         <Column field="slug" header="スラグ" sortable />
         <Column field="created_at" header="作成日" sortable style="width: 160px" />
@@ -102,11 +100,7 @@ async function handleDelete() {
           outlined
           @click="deleteDialogVisible = false"
         />
-        <Button
-          label="削除"
-          severity="danger"
-          @click="handleDelete"
-        />
+        <Button label="削除" severity="danger" @click="handleDelete" />
       </template>
     </Dialog>
   </div>

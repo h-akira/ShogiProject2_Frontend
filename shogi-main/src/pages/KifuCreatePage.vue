@@ -59,9 +59,7 @@ const inputModeOptions = [
   { label: 'テキスト', value: 'text' },
 ]
 
-const tagOptions = computed(() =>
-  tags.value.map((t) => ({ label: t.name, value: t.tid })),
-)
+const tagOptions = computed(() => tags.value.map((t) => ({ label: t.name, value: t.tid })))
 
 getTags().then((res) => {
   if (res.status === 200) {
@@ -215,18 +213,8 @@ async function handleSave() {
       </Message>
 
       <div class="form-actions">
-        <Button
-          label="保存"
-          icon="pi pi-save"
-          :loading="saving"
-          @click="handleSave"
-        />
-        <Button
-          label="キャンセル"
-          severity="secondary"
-          outlined
-          @click="router.back()"
-        />
+        <Button label="保存" icon="pi pi-save" :loading="saving" @click="handleSave" />
+        <Button label="キャンセル" severity="secondary" outlined @click="router.back()" />
       </div>
     </div>
   </div>

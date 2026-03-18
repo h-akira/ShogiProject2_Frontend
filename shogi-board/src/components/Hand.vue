@@ -16,16 +16,14 @@ defineEmits<{
 
 // Filter to only pieces with count > 0, in standard order
 const handEntries = computed(() => {
-  return HAND_PIECE_ORDER
-    .filter(pt => (props.pieces[pt] || 0) > 0)
-    .map(pt => ({
-      type: pt,
-      count: props.pieces[pt]!,
-      display: PIECE_KANJI[pt].normal,
-    }))
+  return HAND_PIECE_ORDER.filter((pt) => (props.pieces[pt] || 0) > 0).map((pt) => ({
+    type: pt,
+    count: props.pieces[pt]!,
+    display: PIECE_KANJI[pt].normal,
+  }))
 })
 
-const label = computed(() => props.player === 'sente' ? '☗先手' : '☖後手')
+const label = computed(() => (props.player === 'sente' ? '☗先手' : '☖後手'))
 </script>
 
 <template>

@@ -1,4 +1,15 @@
-import type { Board, Piece, Position, Player, GameState, Move, BoardMove, DropMove, Hands } from './types'
+import type {
+  Board,
+  Piece,
+  PieceType,
+  Position,
+  Player,
+  GameState,
+  Move,
+  BoardMove,
+  DropMove,
+  Hands,
+} from './types'
 import { PROMOTABLE_TYPES, HAND_PIECE_ORDER } from './constants'
 import { getPieceMovements, findKing, isSquareAttackedBy } from './moves'
 
@@ -7,7 +18,7 @@ import { getPieceMovements, findKing, isSquareAttackedBy } from './moves'
 // -------------------------------------------------------
 
 function cloneBoard(board: Board): Board {
-  return board.map(row => row.map(cell => (cell ? { ...cell } : null)))
+  return board.map((row) => row.map((cell) => (cell ? { ...cell } : null)))
 }
 
 function opponent(player: Player): Player {
@@ -30,12 +41,14 @@ function applyMoveOnBoard(board: Board, move: Move, player?: Player): Board {
   if (move.type === 'move') {
     const piece = b[move.from.row]![move.from.col]!
     b[move.from.row]![move.from.col] = null
-    b[move.to.row]![move.to.col] = move.promote
-      ? { ...piece, promoted: true }
-      : piece
+    b[move.to.row]![move.to.col] = move.promote ? { ...piece, promoted: true } : piece
   } else {
     // drop
-    b[move.to.row]![move.to.col] = { type: move.pieceType, owner: player ?? 'sente', promoted: false }
+    b[move.to.row]![move.to.col] = {
+      type: move.pieceType,
+      owner: player ?? 'sente',
+      promoted: false,
+    }
   }
   return b
 }
@@ -51,8 +64,7 @@ export function getPromotionStatus(piece: Piece, from: Position, to: Position): 
   if (!PROMOTABLE_TYPES.includes(piece.type)) return 'none'
   if (piece.type === 'king' || piece.type === 'gold') return 'none'
 
-  const isInEnemyZone = (row: number, owner: Player) =>
-    owner === 'sente' ? row <= 2 : row >= 6
+  const isInEnemyZone = (row: number, owner: Player) => (owner === 'sente' ? row <= 2 : row >= 6)
 
   const enters = isInEnemyZone(to.row, piece.owner)
   const leaves = isInEnemyZone(from.row, piece.owner)
@@ -202,7 +214,7 @@ export function getLegalBoardMoves(state: GameState, from: Position): BoardMove[
 /**
  * Get all legal drop positions for a given piece type.
  */
-export function getLegalDropPositions(state: GameState, pieceType: string): Position[] {
+export function getLegalDropPositions(state: GameState, pieceType: PieceType): Position[] {
   const player = state.turn
   const positions: Position[] = []
 
@@ -214,13 +226,16 @@ export function getLegalDropPositions(state: GameState, pieceType: string): Posi
 
       // Simulate drop
       const b = cloneBoard(state.board)
-      b[r]![c] = { type: pieceType as any, owner: player, promoted: false }
+      b[r]![c] = { type: pieceType, owner: player, promoted: false }
 
       // Self-check
       if (isInCheck(b, player)) continue
 
       // Uchifuzume check for pawn drops
-      if (pieceType === 'pawn' && isUchifuzume(state.board, state.hands, player, { row: r, col: c })) {
+      if (
+        pieceType === 'pawn' &&
+        isUchifuzume(state.board, state.hands, player, { row: r, col: c })
+      ) {
         continue
       }
 

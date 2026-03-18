@@ -18,7 +18,7 @@ function isSelected(row: number, col: number): boolean {
 }
 
 function isLegalTarget(row: number, col: number): boolean {
-  return props.legalTargets.some(t => t.row === row && t.col === col)
+  return props.legalTargets.some((t) => t.row === row && t.col === col)
 }
 
 function isLastMove(row: number, col: number): boolean {
@@ -124,9 +124,16 @@ const rankLabels = ['一', '二', '三', '四', '五', '六', '七', '八', '九
 }
 
 /* Edge borders */
-.top-edge { border-top-width: 2px; }
-.bottom-edge { border-bottom-width: 2px; }
-.left-edge { border-left-width: 2px; }
-.right-edge { border-right-width: 2px; }
-
+.top-edge {
+  border-top-width: 2px;
+}
+.bottom-edge {
+  border-bottom-width: 2px;
+}
+.left-edge {
+  border-left-width: 2px;
+}
+.right-edge {
+  border-right-width: 2px;
+}
 </style>

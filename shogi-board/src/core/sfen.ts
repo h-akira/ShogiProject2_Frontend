@@ -6,13 +6,25 @@ import { HAND_PIECE_ORDER } from './constants'
 // -------------------------------------------------------
 
 const PIECE_TO_SFEN: Record<PieceType, string> = {
-  king: 'K', rook: 'R', bishop: 'B', gold: 'G',
-  silver: 'S', knight: 'N', lance: 'L', pawn: 'P',
+  king: 'K',
+  rook: 'R',
+  bishop: 'B',
+  gold: 'G',
+  silver: 'S',
+  knight: 'N',
+  lance: 'L',
+  pawn: 'P',
 }
 
 const SFEN_TO_PIECE: Record<string, PieceType> = {
-  K: 'king', R: 'rook', B: 'bishop', G: 'gold',
-  S: 'silver', N: 'knight', L: 'lance', P: 'pawn',
+  K: 'king',
+  R: 'rook',
+  B: 'bishop',
+  G: 'gold',
+  S: 'silver',
+  N: 'knight',
+  L: 'lance',
+  P: 'pawn',
 }
 
 // -------------------------------------------------------

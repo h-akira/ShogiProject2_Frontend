@@ -1,6 +1,4 @@
-export function buildBreadcrumbs(
-  path: string,
-): { name: string; path: string }[] {
+export function buildBreadcrumbs(path: string): { name: string; path: string }[] {
   if (!path) return []
   const parts = path.split('/')
   return parts.map((name, i) => ({

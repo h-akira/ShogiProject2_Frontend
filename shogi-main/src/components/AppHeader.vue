@@ -68,11 +68,7 @@ function handleLogout() {
           />
         </template>
         <template v-else>
-          <Button
-            label="ログイン"
-            icon="pi pi-sign-in"
-            @click="login"
-          />
+          <Button label="ログイン" icon="pi pi-sign-in" @click="login" />
         </template>
       </div>
     </template>

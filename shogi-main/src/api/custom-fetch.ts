@@ -1,29 +1,17 @@
 import { getIdToken, refreshTokens, forceLogout } from '@/auth/auth'
 
-const MAIN_BASE_URL =
-  import.meta.env.VITE_MAIN_API_BASE_URL || '/api/v1/main'
-const ANALYSIS_BASE_URL =
-  import.meta.env.VITE_ANALYSIS_API_BASE_URL || '/api/v1/analysis'
+const MAIN_BASE_URL = import.meta.env.VITE_MAIN_API_BASE_URL || '/api/v1/main'
+const ANALYSIS_BASE_URL = import.meta.env.VITE_ANALYSIS_API_BASE_URL || '/api/v1/analysis'
 
-export const mainFetch = async <T>(
-  url: string,
-  options: RequestInit,
-): Promise<T> => {
+export const mainFetch = async <T>(url: string, options: RequestInit): Promise<T> => {
   return customFetch<T>(MAIN_BASE_URL, url, options)
 }
 
-export const analysisFetch = async <T>(
-  url: string,
-  options: RequestInit,
-): Promise<T> => {
+export const analysisFetch = async <T>(url: string, options: RequestInit): Promise<T> => {
   return customFetch<T>(ANALYSIS_BASE_URL, url, options)
 }
 
-async function customFetch<T>(
-  baseUrl: string,
-  url: string,
-  options: RequestInit,
-): Promise<T> {
+async function customFetch<T>(baseUrl: string, url: string, options: RequestInit): Promise<T> {
   const targetUrl = `${baseUrl}${url}`
 
   let res = await fetch(targetUrl, {

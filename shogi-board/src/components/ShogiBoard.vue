@@ -9,13 +9,16 @@ import GameInfo from './GameInfo.vue'
 import PlaybackControls from './PlaybackControls.vue'
 import InputControls from './InputControls.vue'
 
-const props = withDefaults(defineProps<{
-  initialMode?: AppMode
-  resetLabel?: string
-}>(), {
-  initialMode: 'input',
-  resetLabel: '初期局面に戻る',
-})
+const props = withDefaults(
+  defineProps<{
+    initialMode?: AppMode
+    resetLabel?: string
+  }>(),
+  {
+    initialMode: 'input',
+    resetLabel: '初期局面に戻る',
+  },
+)
 
 const emit = defineEmits<{
   reset: []

@@ -9,7 +9,11 @@
     "build": "npm run generate:api && run-p type-check \"build-only {@}\" --",
     "preview": "vite preview",
     "build-only": "vite build",
-    "type-check": "vue-tsc --build"
+    "type-check": "vue-tsc --build",
+    "lint": "eslint src/ --ignore-pattern src/api/generated/",
+    "lint:fix": "eslint src/ --ignore-pattern src/api/generated/ --fix",
+    "format": "prettier --write src/ --ignore-path .prettierignore",
+    "format:check": "prettier --check src/ --ignore-path .prettierignore"
   },
   "dependencies": {
     "@aws-sdk/client-cognito-identity-provider": "^3.1006.0",
@@ -21,15 +25,22 @@
     "vue-router": "^5.0.1"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@faker-js/faker": "^10.3.0",
     "@tsconfig/node24": "^24.0.4",
     "@types/node": "^24.10.9",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/tsconfig": "^0.8.1",
+    "eslint": "^10.0.3",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-vue": "^10.8.0",
+    "globals": "^17.4.0",
     "msw": "^2.12.10",
     "npm-run-all2": "^8.0.4",
     "orval": "^7.13.2",
+    "prettier": "^3.8.1",
     "typescript": "~5.9.3",
+    "typescript-eslint": "^8.57.1",
     "vite": "^7.3.1",
     "vite-plugin-vue-devtools": "^8.0.5",
     "vue-tsc": "^3.2.4"

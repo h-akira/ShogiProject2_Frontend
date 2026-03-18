@@ -30,6 +30,8 @@ export function useMode(initialMode: AppMode = 'input') {
         return playback.displayState.value
       case 'continuation':
         return continuationGame.state.value
+      default:
+        return inputGame.state.value
     }
   })
 

@@ -44,11 +44,7 @@ async function handleDelete() {
   <div class="tag-list-page">
     <div class="page-header">
       <h1>タグ一覧</h1>
-      <Button
-        label="タグ作成"
-        icon="pi pi-plus"
-        @click="router.push('/tags/new')"
-      />
+      <Button label="タグ作成" icon="pi pi-plus" @click="router.push('/tags/new')" />
     </div>
 
     <DataTable
@@ -56,8 +52,8 @@ async function handleDelete() {
       :loading="loading"
       stripedRows
       selectionMode="single"
-      @row-click="onRowClick"
       class="tag-table"
+      @row-click="onRowClick"
     >
       <Column field="name" header="タグ名" sortable />
       <Column field="created_at" header="作成日" sortable style="width: 160px" />
@@ -104,11 +100,7 @@ async function handleDelete() {
           outlined
           @click="deleteDialogVisible = false"
         />
-        <Button
-          label="削除"
-          severity="danger"
-          @click="handleDelete"
-        />
+        <Button label="削除" severity="danger" @click="handleDelete" />
       </template>
     </Dialog>
   </div>

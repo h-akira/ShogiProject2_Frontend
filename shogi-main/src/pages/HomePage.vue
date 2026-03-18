@@ -120,7 +120,9 @@ h1 {
 
 .dashboard-card {
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
 }
 
 .dashboard-card:hover {

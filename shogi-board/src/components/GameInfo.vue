@@ -83,8 +83,12 @@ defineProps<{
   font-weight: bold;
 }
 
-.value.sente { color: #333; }
-.value.gote { color: #333; }
+.value.sente {
+  color: #333;
+}
+.value.gote {
+  color: #333;
+}
 
 .status {
   font-weight: bold;

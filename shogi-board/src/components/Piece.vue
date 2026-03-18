@@ -21,7 +21,8 @@ const displayChar = () => {
       gote: owner === 'gote',
       promoted: promoted,
     }"
-  >{{ displayChar() }}</span>
+    >{{ displayChar() }}</span
+  >
 </template>
 
 <style scoped>
