@@ -58,7 +58,7 @@ const flipped = computed(() => boardOrientation.value === 'gote')
 const handleBoardClick = (pos: Position) => {
   if (mode.value === 'playback') {
     // Tap navigation uses display columns (flipped reverses left/right)
-    const displayCol = flipped.value ? (8 - pos.col) : pos.col
+    const displayCol = flipped.value ? 8 - pos.col : pos.col
     if (displayCol >= 5) {
       playback.goForward()
     } else if (displayCol <= 3) {

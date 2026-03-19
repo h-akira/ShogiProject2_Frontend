@@ -17,11 +17,11 @@ defineEmits<{
 
 // Map display index to internal board index
 function toRow(rowIdx: number): number {
-  return props.flipped ? (8 - rowIdx) : rowIdx
+  return props.flipped ? 8 - rowIdx : rowIdx
 }
 
 function toCol(colIdx: number): number {
-  return props.flipped ? (8 - colIdx) : colIdx
+  return props.flipped ? 8 - colIdx : colIdx
 }
 
 function isSelected(row: number, col: number): boolean {
@@ -46,8 +46,8 @@ const FILE_LABELS_FLIPPED = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 const RANK_LABELS_NORMAL = ['一', '二', '三', '四', '五', '六', '七', '八', '九']
 const RANK_LABELS_FLIPPED = ['九', '八', '七', '六', '五', '四', '三', '二', '一']
 
-const fileLabels = computed(() => props.flipped ? FILE_LABELS_FLIPPED : FILE_LABELS_NORMAL)
-const rankLabels = computed(() => props.flipped ? RANK_LABELS_FLIPPED : RANK_LABELS_NORMAL)
+const fileLabels = computed(() => (props.flipped ? FILE_LABELS_FLIPPED : FILE_LABELS_NORMAL))
+const rankLabels = computed(() => (props.flipped ? RANK_LABELS_FLIPPED : RANK_LABELS_NORMAL))
 </script>
 
 <template>
@@ -65,9 +65,9 @@ const rankLabels = computed(() => props.flipped ? RANK_LABELS_FLIPPED : RANK_LAB
 
       <!-- Board grid -->
       <div class="board">
-        <template v-for="(_, rowIdx) in rows" :key="rowIdx">
+        <template v-for="(_r, rowIdx) in rows" :key="rowIdx">
           <Square
-            v-for="(_, colIdx) in cols"
+            v-for="(_c, colIdx) in cols"
             :key="`${rowIdx}-${colIdx}`"
             :piece="board[toRow(rowIdx)]?.[toCol(colIdx)] ?? null"
             :is-selected="isSelected(toRow(rowIdx), toCol(colIdx))"
