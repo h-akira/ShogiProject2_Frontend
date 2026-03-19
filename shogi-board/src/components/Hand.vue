@@ -8,6 +8,7 @@ const props = defineProps<{
   player: Player
   selectedPiece: PieceType | null
   isActive: boolean
+  flipped: boolean
 }>()
 
 defineEmits<{
@@ -37,7 +38,7 @@ const label = computed(() => (props.player === 'sente' ? '☗先手' : '☖後�
         class="hand-piece"
         :class="{
           selected: selectedPiece === entry.type,
-          gote: player === 'gote',
+          rotated: (player === 'gote') !== flipped,
         }"
         @click="$emit('pieceClick', entry.type)"
       >
@@ -109,7 +110,7 @@ const label = computed(() => (props.player === 'sente' ? '☗先手' : '☖後�
   font-weight: bold;
 }
 
-.hand-piece.gote .kanji {
+.hand-piece.rotated .kanji {
   display: inline-block;
   transform: rotate(180deg);
 }

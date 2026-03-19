@@ -5,6 +5,7 @@ defineProps<{
   currentMoveIndex: number
   totalMoves: number
   mode: AppMode
+  flipped: boolean
 }>()
 
 const emit = defineEmits<{
@@ -16,6 +17,7 @@ const emit = defineEmits<{
   enterContinuation: []
   exitContinuation: []
   undo: []
+  toggleFlip: []
 }>()
 
 function onSliderInput(event: Event) {
@@ -57,7 +59,10 @@ function onSliderInput(event: Event) {
         />
         <span class="move-info">{{ currentMoveIndex }} / {{ totalMoves }}手</span>
       </div>
-      <button class="continuation-btn" @click="$emit('enterContinuation')">継盤</button>
+      <div class="action-buttons">
+        <button class="continuation-btn" @click="$emit('enterContinuation')">継盤</button>
+        <button class="flip-btn" @click="$emit('toggleFlip')">反転</button>
+      </div>
     </template>
 
     <!-- Continuation mode -->
@@ -65,6 +70,7 @@ function onSliderInput(event: Event) {
       <div class="continuation-bar">
         <span class="continuation-label">継盤モード</span>
         <button @click="$emit('undo')">一手戻す</button>
+        <button class="flip-btn" @click="$emit('toggleFlip')">反転</button>
         <button class="exit-btn" @click="$emit('exitContinuation')">終了</button>
       </div>
     </template>
@@ -177,5 +183,25 @@ function onSliderInput(event: Event) {
 
 .exit-btn:hover {
   background: #fee !important;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.flip-btn {
+  padding: 4px 12px;
+  border: 1px solid #8b4513;
+  border-radius: 4px;
+  background: #f5e6c8;
+  color: #5a3510;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+
+.flip-btn:hover {
+  background: #e8d4a8;
 }
 </style>

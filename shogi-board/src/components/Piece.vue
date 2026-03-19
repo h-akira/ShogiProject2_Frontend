@@ -6,6 +6,7 @@ const props = defineProps<{
   type: PieceType
   owner: Player
   promoted: boolean
+  flipped: boolean
 }>()
 
 const displayChar = () => {
@@ -18,7 +19,7 @@ const displayChar = () => {
   <span
     class="piece"
     :class="{
-      gote: owner === 'gote',
+      rotated: (owner === 'gote') !== flipped,
       promoted: promoted,
     }"
     >{{ displayChar() }}</span
@@ -35,7 +36,7 @@ const displayChar = () => {
   pointer-events: none;
 }
 
-.piece.gote {
+.piece.rotated {
   transform: rotate(180deg);
   display: inline-block;
 }

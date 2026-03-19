@@ -48,14 +48,20 @@ const {
   loadKif,
   playback,
   inputGame,
+  boardOrientation,
+  toggleBoardOrientation,
 } = modeCtrl
+
+const flipped = computed(() => boardOrientation.value === 'gote')
 
 // Handle board click: playback mode uses tap navigation, other modes use selection
 const handleBoardClick = (pos: Position) => {
   if (mode.value === 'playback') {
-    if (pos.col >= 5) {
+    // Tap navigation uses display columns (flipped reverses left/right)
+    const displayCol = flipped.value ? (8 - pos.col) : pos.col
+    if (displayCol >= 5) {
       playback.goForward()
-    } else if (pos.col <= 3) {
+    } else if (displayCol <= 3) {
       playback.goBack()
     }
     return
@@ -106,17 +112,20 @@ defineExpose({
   enterContinuation,
   exitContinuation,
   playback,
+  boardOrientation,
+  toggleBoardOrientation,
 })
 </script>
 
 <template>
   <div class="shogi-board-container">
-    <!-- Gote hand (top) -->
+    <!-- Top hand: gote normally, sente when flipped -->
     <Hand
-      :pieces="activeState.hands.gote"
-      player="gote"
-      :selected-piece="activeState.turn === 'gote' ? selectedHandPiece : null"
-      :is-active="activeState.turn === 'gote'"
+      :pieces="flipped ? activeState.hands.sente : activeState.hands.gote"
+      :player="flipped ? 'sente' : 'gote'"
+      :selected-piece="activeState.turn === (flipped ? 'sente' : 'gote') ? selectedHandPiece : null"
+      :is-active="activeState.turn === (flipped ? 'sente' : 'gote')"
+      :flipped="flipped"
       @piece-click="(pt: PieceType) => isInteractive && handleHandClick(pt)"
     />
 
@@ -126,15 +135,17 @@ defineExpose({
       :selected-pos="selectedPos"
       :legal-targets="isInteractive ? legalTargets : []"
       :last-move="lastMove"
+      :flipped="flipped"
       @square-click="(pos: Position) => handleBoardClick(pos)"
     />
 
-    <!-- Sente hand (bottom) -->
+    <!-- Bottom hand: sente normally, gote when flipped -->
     <Hand
-      :pieces="activeState.hands.sente"
-      player="sente"
-      :selected-piece="activeState.turn === 'sente' ? selectedHandPiece : null"
-      :is-active="activeState.turn === 'sente'"
+      :pieces="flipped ? activeState.hands.gote : activeState.hands.sente"
+      :player="flipped ? 'gote' : 'sente'"
+      :selected-piece="activeState.turn === (flipped ? 'gote' : 'sente') ? selectedHandPiece : null"
+      :is-active="activeState.turn === (flipped ? 'gote' : 'sente')"
+      :flipped="flipped"
       @piece-click="(pt: PieceType) => isInteractive && handleHandClick(pt)"
     />
 
@@ -144,6 +155,7 @@ defineExpose({
       :current-move-index="playback.currentMoveIndex.value"
       :total-moves="playback.totalMoves.value"
       :mode="mode"
+      :flipped="flipped"
       @go-to-start="playback.goToStart()"
       @go-back="playback.goBack()"
       @go-forward="playback.goForward()"
@@ -152,6 +164,7 @@ defineExpose({
       @enter-continuation="enterContinuation()"
       @exit-continuation="exitContinuation()"
       @undo="doUndo()"
+      @toggle-flip="toggleBoardOrientation()"
     />
 
     <!-- Input mode controls -->
@@ -159,8 +172,10 @@ defineExpose({
       v-if="mode === 'input'"
       :move-count="activeState.moveCount"
       :reset-label="props.resetLabel"
+      :flipped="flipped"
       @undo="doUndo()"
       @reset="emit('reset')"
+      @toggle-flip="toggleBoardOrientation()"
     />
 
     <!-- Game info -->

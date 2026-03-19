@@ -3,6 +3,7 @@ withDefaults(
   defineProps<{
     moveCount: number
     resetLabel?: string
+    flipped: boolean
   }>(),
   {
     resetLabel: '初期局面に戻る',
@@ -12,12 +13,14 @@ withDefaults(
 defineEmits<{
   undo: []
   reset: []
+  toggleFlip: []
 }>()
 </script>
 
 <template>
   <div class="input-controls">
     <button :disabled="moveCount <= 0" title="一手戻す" @click="$emit('undo')">一手戻す</button>
+    <button class="flip-btn" title="盤面反転" @click="$emit('toggleFlip')">反転</button>
     <button :title="resetLabel" class="reset-btn" @click="$emit('reset')">{{ resetLabel }}</button>
   </div>
 </template>
@@ -47,6 +50,16 @@ defineEmits<{
 .input-controls button:disabled {
   opacity: 0.4;
   cursor: not-allowed;
+}
+
+.flip-btn {
+  border-color: #8b4513 !important;
+  background: #f5e6c8 !important;
+  color: #5a3510 !important;
+}
+
+.flip-btn:hover:not(:disabled) {
+  background: #e8d4a8 !important;
 }
 
 .reset-btn {

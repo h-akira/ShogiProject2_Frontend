@@ -1,5 +1,5 @@
 import { ref, computed } from 'vue'
-import type { GameState, Move } from '../core/types'
+import type { GameState, Move, Player } from '../core/types'
 import { toSfen } from '../core/sfen'
 import { isCheckmate } from '../core/rules'
 import { useGameState } from './useGameState'
@@ -10,6 +10,13 @@ export type AppMode = 'input' | 'playback' | 'continuation'
 
 export function useMode(initialMode: AppMode = 'input') {
   const mode = ref<AppMode>(initialMode)
+
+  // Board orientation: 'sente' = normal view, 'gote' = flipped view
+  const boardOrientation = ref<Player>('sente')
+
+  const toggleBoardOrientation = () => {
+    boardOrientation.value = boardOrientation.value === 'sente' ? 'gote' : 'sente'
+  }
 
   // Input mode state
   const inputGame = useGameState()
@@ -130,6 +137,8 @@ export function useMode(initialMode: AppMode = 'input') {
   return {
     mode,
     activeState,
+    boardOrientation,
+    toggleBoardOrientation,
     isInteractive,
     sfen,
     checkmated,
