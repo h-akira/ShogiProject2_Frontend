@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="koma" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#e8d4a0"/>
+      <stop offset="100%" stop-color="#d4b86a"/>
+    </linearGradient>
+  </defs>
+  <!-- Koma (piece) shape - pentagon -->
+  <path d="M32 6 L50 20 L46 58 L18 58 L14 20 Z"
+        fill="url(#koma)"
+        stroke="#8b4513"
+        stroke-width="2.5"
+        stroke-linejoin="round"/>
+  <!-- Kanji 歩 -->
+  <text x="32" y="37"
+        font-family="serif"
+        font-size="28"
+        font-weight="bold"
+        fill="#5a3a1a"
+        text-anchor="middle"
+        dominant-baseline="central">歩</text>
+</svg>
