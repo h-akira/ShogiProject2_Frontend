@@ -99,6 +99,8 @@ npm install --prefix shogi-main
 ```
 
 > ハマりどころ：アプリがローカルライブラリを参照している場合、**ライブラリを先に用意しないと解決に失敗**します。AI に「セットアップして」と頼むときは、この順序も指示に含めると確実です。
+>
+> なお上の例で board は `npm ci`・main は `npm install` と**コマンドが混在**しているのは意図的です（`file:` ローカル参照のための使い分け）。理由は [03_commands.md の「`npm install` と `npm ci` の使い分け」](03_commands.md#npm-install-と-npm-ci-の使い分け) で扱います。
 
 ---
 
