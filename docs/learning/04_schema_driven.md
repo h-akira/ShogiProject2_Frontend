@@ -59,6 +59,44 @@ flowchart LR
 
 ---
 
+## 生成物の「名前」と「パス」はどう決まるか
+
+`getGetTagsMockHandler()` のような関数名や、それがどの URL に対応するかは、**人間が付けるのではなく YAML から機械的に決まります**。源泉は 2 つです。
+
+| 生成物 | 源泉（YAML 側） |
+|--------|----------------|
+| 関数名（クライアント・型・モック共通） | エンドポイントの **`operationId`** |
+| 対応する URL とメソッド | `paths` の**パス**と **HTTP メソッド** |
+
+YAML 側:
+
+```yaml
+paths:
+  /tags:                    # ← パス
+    get:                    # ← メソッド
+      operationId: getTags  # ← 操作名（関数名の素）
+  /tags/{tid}:
+    get:
+      operationId: getTag
+```
+
+生成物（対応関係）:
+
+| YAML の定義 | 生成される関数名 | 対応する URL |
+|-------------|------------------|--------------|
+| `GET /tags` / `getTags` | `getGetTagsMockHandler` | `http.get('/api/v1/main/tags')` |
+| `POST /tags` / `createTag` | `getCreateTagMockHandler` | `http.post('/api/v1/main/tags')` |
+| `GET /tags/{tid}` / `getTag` | `getGetTagMockHandler` | `http.get('/api/v1/main/tags/:tid')` |
+
+仕組み:
+
+- **関数名は `operationId` 由来**。モック関数は「`get` ＋ `OperationId`（先頭大文字）＋ `MockHandler`」で作られる。`getGetTagsMockHandler` で `get` が重なって見えるのは、「モック取得の `get`」＋「operationId の `getTags`」が並ぶため。
+- **URL は `paths` 由来**。`baseUrl`（`/api/v1/main`、`orval.config.ts` の `mock.baseUrl`）＋ パスで決まる。パスパラメータ **`{tid}` は `:tid` に変換**される（MSW のパス記法）。
+
+> 実用上のポイント：**`operationId` の付け方が、生成されるコードの読みやすさに直結**します。`operationId` を分かりやすく命名しておけば、クライアント関数・型・モック関数すべてが分かりやすい名前になります。逆に、名前を変えたければ**コード側ではなく YAML の `operationId` を直して再生成**します（生成物は触らない原則どおり）。
+
+---
+
 ## モックの「固定」と「ランダム」の使い分け
 
 生成されたモックハンドラは、**引数を渡すかどうか**で挙動が変わります。
